@@ -1,17 +1,29 @@
-#include"DxLib.h"
+#include "DxLib.h"
+#include "Object/Player/Player.h"
 
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_
-	LPSTR lpCmdLine, _In_ int nShowCmd)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	ChangeWindowMode(TRUE);
-	if (DxLib_Init() == -1)
-	{
-		return -1;
-	}
+    ChangeWindowMode(TRUE);
 
-	WaitKey();
+    if (DxLib_Init() == -1)
+        return -1;
 
-	DxLib_End();
+    SetDrawScreen(DX_SCREEN_BACK);
 
-	return 0;
+    Player player;
+    player.Initialize();
+
+    while (ProcessMessage() == 0)
+    {
+        ClearDrawScreen();
+
+        player.Update(1.0f / 60.0f);
+        player.Draw();
+
+        ScreenFlip();
+    }
+
+    player.Finalize();
+    DxLib_End();
+    return 0;
 }
