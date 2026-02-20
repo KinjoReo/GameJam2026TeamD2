@@ -49,6 +49,8 @@ private:
 	int animation_count;					// アニメーション添字
 
 
+	bool isDownPressed;
+
 
 	// 移動アニメーションの順番
 	const int animation_num[4] = { 1, 2, 3, 2, };
