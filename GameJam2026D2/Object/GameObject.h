@@ -3,16 +3,17 @@
 #include "DxLib.h"
 #include "../Utility/Collision.h"
 #include "../Utility/Vector2D.h"
-
+#include "../Utility/ResourceManager.h"
 
 class GameObject
 {
 protected:
 	Vector2D location;			//位置座標
-	//Collision collision;		// 当たり判定情報
+	Collision collision;		// 当たり判定情報
 	int image;					//画像の情報
 	int z_layer;				//レイヤー情報
 	bool is_mobility;			//可動性
+	bool is_aggressive;			// 攻撃性
 
 	class InGame* Ingame;		//InGameのポインター
 
@@ -81,13 +82,19 @@ public:
 	/// 当たり判定取得処理
 	/// </summary>
 	/// <returns>当たり判定情報</returns>
-	//const Collision& GetCollision() const;
+	const Collision& GetCollision() const;
 
 	/// <summary>
 	/// Ｚレイヤー情報取得処理
 	/// </summary>
 	/// <returns>Ｚレイヤー情報</returns>
 	const unsigned char GetZLayer() const;
+
+	/// <summary>
+	/// 攻撃性情報の取得処理
+	/// </summary>
+	/// <returns>可動性情報</returns>
+	const bool GetAggressive() const;
 
 	/// <summary>
 	/// 可動性情報の取得処理
