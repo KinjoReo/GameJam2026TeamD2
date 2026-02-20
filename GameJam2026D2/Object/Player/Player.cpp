@@ -25,6 +25,8 @@ void Player::Initialize()
 	location = Vector2D(300, 500); // 画面中央あたり
 
 	lockDir = NONE;
+
+	isDownPressed = false;
 }
 
 void Player::Update(float delta_second)
@@ -55,10 +57,17 @@ void Player::Update(float delta_second)
 	// ----- 移動判定（キーボード or パッド） -----
 	bool moveRight = CheckHitKey(KEY_INPUT_RIGHT) || (pad & PAD_INPUT_RIGHT);
 	bool moveLeft = CheckHitKey(KEY_INPUT_LEFT) || (pad & PAD_INPUT_LEFT);
+	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_DOWN);
 
+	isDownPressed = moveDown;
+
+	if (isDownPressed)
+	{
+		velocity = Vector2D(0.0f, 0.0f);
+	}
 
 	// 右キー
-	if (moveRight && lockDir != LOCK_RIGHT)
+	if (!isDownPressed && moveRight && lockDir != LOCK_RIGHT)
 	{
 		if (lockDir != LOCK_RIGHT)  // 右がロックされていない
 		{
@@ -68,7 +77,7 @@ void Player::Update(float delta_second)
 	}
 
 	// 左キー
-	if (moveLeft && lockDir != LOCK_LEFT)
+	if (!isDownPressed && moveLeft && lockDir != LOCK_LEFT)
 	{
 		if (lockDir != LOCK_LEFT)   // 左がロックされていない
 		{
@@ -88,6 +97,7 @@ void Player::Update(float delta_second)
 
 	// 移動
 	location += velocity;
+	
 
 	// Y制限
 	if (location.y <= 100.0f)
@@ -114,12 +124,21 @@ void Player::Draw() const
 
 	
 
-	int red = GetColor(255, 0, 0);
+	int color;
+
+	if (isDownPressed)
+	{
+		color = GetColor(0, 0, 255); // 青
+	}
+	else
+	{
+		color = GetColor(255, 0, 0); // 赤
+	}
 
 	int x = (int)location.x;
 	int y = (int)location.y;
 
-	DrawBox(x - 10, y - 10, x + 10, y + 10, red, TRUE);
+	DrawBox(x - 10, y - 10, x + 10, y + 10, color, TRUE);
 
 	DrawString(200, 200, "PLAYER DRAW", GetColor(255, 255, 255));
 
