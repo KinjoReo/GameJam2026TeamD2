@@ -21,16 +21,13 @@
     <ClCompile Include="Object\Player\Player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Object\GameObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Utility\Vector2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Scenes\InGame\InGameScene.cpp">
+    <ClCompile Include="Object\GameObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Scenes\SceneBase\SceneBase.cpp">
+    <ClCompile Include="title\TitleScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Utility\Collision.cpp">
@@ -50,19 +47,36 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.16.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.35.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.05.32.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="assets\images\Title.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="assets\images\Titlee.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="assets\images\Titleee.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Object\Player\Player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\GameObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Utility\Vector2D.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Scenes\InGame\InGameScene.h">
+    <ClInclude Include="Object\GameObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Scenes\SceneBase\SceneBase.h">
+    <ClInclude Include="title\TitleScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Utility\Collision.h">

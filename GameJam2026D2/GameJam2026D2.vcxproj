@@ -147,6 +147,18 @@
     <ClInclude Include="Object\Character\Enemy\EnemyBase.h" />
     <ClInclude Include="Object\Character\Enemy\EnemyCharacter.h" />
     <ClInclude Include="Object\Character\Enemy\First\Nightmare.h" />
+    <ClCompile Include="title\TitleScene.cpp" />
+    <ClCompile Include="Utility\Vector2D.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.05.32.png" />
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.16.png" />
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.35.png" />
+    <Image Include="assets\images\Title.png" />
+    <Image Include="assets\images\Titlee.png" />
+    <Image Include="assets\images\Titleee.png" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Object\GameObject.h" />
     <ClInclude Include="Object\GameObjectManager.h" />
     <ClInclude Include="Object\Player\Player.h" />
@@ -155,6 +167,7 @@
     <ClInclude Include="Utility\Collision.h" />
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Utility\Singleton.h" />
+    <ClInclude Include="title\TitleScene.h" />
     <ClInclude Include="Utility\Vector2D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
