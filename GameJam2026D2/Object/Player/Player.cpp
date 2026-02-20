@@ -24,6 +24,8 @@ void Player::Initialize()
 	/*image = move_animation[0];*/
 	location = Vector2D(300, 500); // 画面中央あたり
 
+	reachTopCount = 0;
+
 	lockDir = NONE;
 
 	isDownPressed = false;
@@ -35,11 +37,22 @@ void Player::Update(float delta_second)
 	float speed = 0.5f;
 	velocity = Vector2D(0.0f, 0.0f);
 
+	// クールタイム減少
+	if (downCooldown > 0.0f)
+	{
+		downCooldown -= delta_second;
+		if (downCooldown < 0.0f)
+			downCooldown = 0.0f;
+	}
+
+	bool isOnWall = false;
+
 	// 右壁に到達
 	if (location.x >= 290)
 	{
 		location.x = 290;
 		lockDir = LOCK_RIGHT;   // 次は左方向しか許可しない
+		isOnWall = true;
 	}
 
 	// 左壁に到達
@@ -47,7 +60,18 @@ void Player::Update(float delta_second)
 	{
 		location.x = 180;
 		lockDir = LOCK_LEFT;  // 次は右方向しか許可しない
+		isOnWall = true;
 	}
+
+	// 壁に「今フレーム初めて」当たった時だけ
+	if (isOnWall && !wasOnWall)
+	{
+		downCooldown = 2.0f;  // 壁クールタイム
+	}
+
+	wasOnWall = isOnWall;
+
+	
 
 	// ----- 入力処理 -----
 
@@ -59,27 +83,55 @@ void Player::Update(float delta_second)
 	bool moveLeft = CheckHitKey(KEY_INPUT_LEFT) || (pad & PAD_INPUT_LEFT);
 	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_DOWN);
 
-	isDownPressed = moveDown;
+	isDownPressed = moveDown;   // 青くなる
 
-	if (isDownPressed)
+	//if (isDownPressed)
+	//{
+	//	velocity = Vector2D(0.0f, 0.0f);
+	//}
+
+	//// 右キー
+	//if (!isDownPressed && moveRight && lockDir != LOCK_RIGHT)
+	//{
+	//	if (lockDir != LOCK_RIGHT)  // 右がロックされていない
+	//	{
+	//		velocity.x = 1.0f;
+	//		velocity.y = -0.6f;
+	//	}
+	//}
+
+	//// 左キー
+	//if (!isDownPressed && moveLeft && lockDir != LOCK_LEFT)
+	//{
+	//	if (lockDir != LOCK_LEFT)   // 左がロックされていない
+	//	{
+	//		velocity.x = -1.0f;
+	//		velocity.y = -0.6f;
+	//	}
+	//}
+
+	// しゃがみ押した瞬間にクールタイム開始
+	if (moveDown && downCooldown <= 0.0f)
+	{
+		downCooldown = 3.0f;      // 3秒クールタイム
+	}
+
+	// クールタイム中は動かない
+	if (downCooldown > 0.0f)
 	{
 		velocity = Vector2D(0.0f, 0.0f);
 	}
-
-	// 右キー
-	if (!isDownPressed && moveRight && lockDir != LOCK_RIGHT)
+	else
 	{
-		if (lockDir != LOCK_RIGHT)  // 右がロックされていない
+		// ----- 通常移動 -----
+
+		if (moveRight && lockDir != LOCK_RIGHT)
 		{
 			velocity.x = 1.0f;
 			velocity.y = -0.6f;
 		}
-	}
 
-	// 左キー
-	if (!isDownPressed && moveLeft && lockDir != LOCK_LEFT)
-	{
-		if (lockDir != LOCK_LEFT)   // 左がロックされていない
+		if (moveLeft && lockDir != LOCK_LEFT)
 		{
 			velocity.x = -1.0f;
 			velocity.y = -0.6f;
@@ -110,11 +162,11 @@ void Player::Update(float delta_second)
 		location.y = 300.0f;
 	}
 
-	if (location.y < 100) {
-		// プレイヤーが上端に到達した
-		location.y = 100;      // Y制限
-		OnReachTop();          // 暗転＋リスタート
-	}
+	//if (location.y < 100) {
+	//	// プレイヤーが上端に到達した
+	//	location.y = 100;      // Y制限
+	//	OnReachTop();          // 暗転＋リスタート
+	//}
 	// else は何もしない（＝止まる）
 }
 
@@ -122,7 +174,9 @@ void Player::Draw() const
 {
     //__super::Draw();
 
-	
+	DrawFormatString(50, 50, GetColor(255, 255, 255),
+		"% d", reachTopCount);
+
 
 	int color;
 
@@ -139,8 +193,6 @@ void Player::Draw() const
 	int y = (int)location.y;
 
 	DrawBox(x - 10, y - 10, x + 10, y + 10, color, TRUE);
-
-	DrawString(200, 200, "PLAYER DRAW", GetColor(255, 255, 255));
 
 
 }
@@ -188,6 +240,7 @@ void Player::AnimationControl(float delta_second)
 //	}
 }
 
+
 void Player::DrawDarkScreen(float alpha)
 {
 	// alpha = 0.0f ~ 1.0f
@@ -199,6 +252,9 @@ void Player::DrawDarkScreen(float alpha)
 
 void Player::OnReachTop()
 {
+
+	reachTopCount++;
+
 	// 画面暗転フェードアウト
 	for (float alpha = 0.0f; alpha <= 1.0f; alpha += 0.05f)
 	{

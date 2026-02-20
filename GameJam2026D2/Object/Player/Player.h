@@ -12,6 +12,7 @@ enum ePlayerState
 	DIE,		// 死亡状態
 };
 
+// 進行方向の制限
 enum LockDirection
 {
 	NONE,
@@ -48,6 +49,13 @@ private:
 	float animation_time;					// アニメーション時間
 	int animation_count;					// アニメーション添字
 
+	float downCooldown = 0.0f;   // しゃがみ後のクールタイム
+
+	bool wasOnWall = false;      // 壁のクールタイム
+
+	int reachTopCount;                      // プレイヤーが上端に到達したカウント
+
+	int GetReachTopCount() const { return reachTopCount; }      // もし外から参照したいなら
 
 	bool isDownPressed;
 
