@@ -2,13 +2,14 @@
 
 #include "DxLib.h"
 #include "../Utility/Collision.h"
+#include "../Utility/Vector2D.h"
 
 
 class GameObject
 {
 protected:
 	Vector2D location;			//位置座標
-	Collision collision;		// 当たり判定情報
+	//Collision collision;		// 当たり判定情報
 	int image;					//画像の情報
 	int z_layer;				//レイヤー情報
 	bool is_mobility;			//可動性
@@ -74,13 +75,13 @@ public:
 	/// 位置情報変更処理
 	/// </summary>
 	/// <param name="location">変更したい位置情報</param>
-	virtual void SetLocation(const Vector2D& location);
+	/*virtual void SetLocation(const Vector2D& location);*/
 
 	/// <summary>
 	/// 当たり判定取得処理
 	/// </summary>
 	/// <returns>当たり判定情報</returns>
-	const Collision& GetCollision() const;
+	//const Collision& GetCollision() const;
 
 	/// <summary>
 	/// Ｚレイヤー情報取得処理

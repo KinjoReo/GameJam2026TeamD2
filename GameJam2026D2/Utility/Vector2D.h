@@ -97,8 +97,4 @@ public:
 
 	// 2“_ŠÔ‚Ì‹——£
 	static float Distance(const Vector2D& a, const Vector2D& b);
-
-	//intŒ^‚Ö•ÏŠ·
-	void ToInt(int* x, int* y) const;
-
 };

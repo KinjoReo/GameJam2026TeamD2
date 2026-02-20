@@ -1,99 +1,67 @@
 #include "GameObject.h"
-//#include "../Scenes/SceneBase.h"
-#include "DxLib.h"
 
-GameObject::GameObject() :
-	location(0.0f),
-	image(NULL),
-	z_layer(0),
-	is_mobility(false)
+GameObject::GameObject()
 {
-
 }
 
 GameObject::~GameObject()
 {
-
 }
 
-// 初期化処理
 void GameObject::Initialize()
 {
-
 }
 
-// 更新処理
 void GameObject::Update(float delta_second)
 {
-
 }
 
-// 描画処理
 void GameObject::Draw() const
 {
-	// オフセット値を基に画像の描画を行う
-	DrawRotaGraphF(location.x, location.y, 1.0, 0.0, image, TRUE);
+    if (image != -1)
+    {
+        DrawGraph((int)location.x, (int)location.y, image, TRUE);
+    }
 }
 
-// 終了時処理
 void GameObject::Finalize()
 {
-
 }
 
-// 当たり判定通知処理
-void GameObject::OnHitCollision(GameObject* hit_object)
-{
-
-}
-
-// 攻撃範囲通知処理
-void GameObject::OnAreaDetection(GameObject* hit_object)
-{
-
-}
-
-// 攻撃範囲通知処理
-void GameObject::NoHit()
-{
-
-}
-
-// 位置座標取得処理
 const Vector2D& GameObject::GetLocation() const
 {
-	return location;
+    return location;
 }
 
-// 位置情報変更処理
-void GameObject::SetLocation(const Vector2D& location)
-{
-	this->location = location;
-}
-
-// 当たり判定取得処理
-const Collision& GameObject::GetCollision() const
-{
-	return collision;
-}
-
-// Zレイヤー情報取得処理
 const unsigned char GameObject::GetZLayer() const
 {
-	return z_layer;
+    return z_layer;
 }
 
-// 可動性情報の取得処理
 const bool GameObject::GetMobility() const
 {
-	return is_mobility;
+    return is_mobility;
 }
 
-/// <summary>
-/// InGameの情報取得
-/// </summary>
-/// <param name="point">InGameSceneのPointer</param>
-void GameObject::SetInGamePoint(class InGame* point)
+void GameObject::SetInGamePoint(InGame* point)
 {
-	Ingame = point;
+    Ingame = point;
+}
+
+
+void GameObject::OnHitCollision(GameObject* hit_object)
+{
+}
+
+void GameObject::OnAreaDetection(GameObject* hit_object)
+{
+}
+
+void GameObject::NoHit()
+{
+}
+
+void GameObject::SetLocation(const Vector2D& location)
+{
+    this->location = location;
 }
