@@ -132,10 +132,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="title\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h" />
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.05.32.png" />
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.16.png" />
+    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.35.png" />
+    <Image Include="assets\images\Title.png" />
+    <Image Include="assets\images\Titlee.png" />
+    <Image Include="assets\images\Titleee.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="title\SceneType.h" />
+    <ClInclude Include="title\TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
