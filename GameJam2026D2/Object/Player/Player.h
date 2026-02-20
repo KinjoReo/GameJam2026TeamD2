@@ -12,6 +12,15 @@ enum ePlayerState
 	DIE,		// 死亡状態
 };
 
+enum LockDirection
+{
+	NONE,
+	LOCK_RIGHT,
+	LOCK_LEFT
+};
+
+
+
 
 /// プレイヤークラス（主人公）
 class Player : public GameObject
@@ -39,8 +48,12 @@ private:
 	float animation_time;					// アニメーション時間
 	int animation_count;					// アニメーション添字
 
+
+
 	// 移動アニメーションの順番
 	const int animation_num[4] = { 1, 2, 3, 2, };
+
+	LockDirection lockDir;   //
 
 public:
 	Player();
@@ -68,5 +81,9 @@ private:
 	/// </summary>
 	/// <param name="delta_second">1フレームあたりの時間</param>
 	void AnimationControl(float delta_second);
+
+	void DrawDarkScreen(float alpha);
+
+	void OnReachTop();
 
 };
