@@ -4,7 +4,7 @@
 
 InGameScene::InGameScene()
 	:wallHeight(25)
-	,wllTop(80)
+	,wallTop(80)
 	,InGameBGM(-1)
 	,player(nullptr)
 	,warpImage(-1)

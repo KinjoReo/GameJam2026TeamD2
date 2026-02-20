@@ -148,7 +148,6 @@
     <ClInclude Include="Object\Character\Enemy\EnemyCharacter.h" />
     <ClInclude Include="Object\Character\Enemy\First\Nightmare.h" />
     <ClCompile Include="title\TitleScene.cpp" />
-    <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.05.32.png" />

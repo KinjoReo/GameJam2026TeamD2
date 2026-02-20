@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SceneBase.h"
-#include "../Object/Player/Player.h"
+#include "../SceneBase/SceneBase.h"
+#include "../../Object/Player/Player.h"
 
 class InGameScene :public SceneBase
 {
@@ -11,7 +11,7 @@ private:
 	Player* player;
 
 	//BGM
-	Int InGameBGM = -1;
+	int InGameBGM = -1;
 
 	//ƒtƒHƒ“ƒg
 	int timerFont;
