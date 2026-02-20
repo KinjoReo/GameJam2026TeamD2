@@ -74,6 +74,10 @@ public:
 	virtual void Draw() const override;
 	virtual void Finalize() override;
 
+	bool IsHidden() const { return isDownPressed; }         // Titan‚Ìgetter
+
+	Vector2D GetLocation() const { return location; }       // ’Ç‚¢‚©‚¯
+
 	/// <summary>
 	/// “–‚½‚è”»’è’Ê’mˆ—
 	/// </summary>
