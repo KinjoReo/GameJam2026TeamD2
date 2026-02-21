@@ -58,6 +58,11 @@ private:
 	virtual void Movement(float delta_second);
 
 	/// <summary>
+	/// 攻撃処理
+	/// </summary>
+	virtual void Attack(GameObject* hit_object) override;
+
+	/// <summary>
 	/// 移動処理
 	/// </summary>
 	/// <param name = "hit_object">1フレーム当たりの時間</param>
@@ -67,6 +72,6 @@ private:
 	/// エフェクト制御処理
 	/// </summary>
 	/// <param name = "hit_object">1フレーム当たりの時間</param>
-	virtual void EffectControl(float delta_second);
+	//virtual void EffectControl(float delta_second);
 
 };

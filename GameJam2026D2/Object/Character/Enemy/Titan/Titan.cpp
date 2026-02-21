@@ -2,6 +2,7 @@
 #include "../../../Player/Player.h"
 #include "DxLib.h"
 
+
 /// <summary>
 /// コンストラクタ
 /// 監視対象のプレイヤーを受け取り、各種変数を初期化する
@@ -16,6 +17,7 @@ Enemy::Enemy(Player* target)
 {
 }
 
+
 /// <summary>
 /// デストラクタ
 /// （現在は特別な解放処理なし）
@@ -24,14 +26,16 @@ Enemy::~Enemy()
 {
 }
 
+
 /// <summary>
 /// 初期化処理
-/// 出現位置を設定する
+/// エネミーの出現位置を設定する
 /// </summary>
 void Enemy::Initialize()
 {
 	location = Vector2D(300, 200);  // 上の方に出現
 }
+
 
 /// <summary>
 /// 毎フレーム更新処理
@@ -63,6 +67,7 @@ void Enemy::Update(float delta_second)
 	}
 }
 
+
 /// <summary>
 /// 描画処理
 /// エネミー本体および監視演出を描画する
@@ -73,9 +78,16 @@ void Enemy::Draw() const
 	int x = (int)location.x;
 	int y = (int)location.y;
 
-	// エネミー本体
-	DrawBox(x - 15, y - 15, x + 15, y + 15,
-		GetColor(255, 255, 0), TRUE);    // 黄色の四角
+
+	// ===============================
+	// エネミー本体描画
+	// ===============================
+	DrawBox(x - 15, y - 15, x + 15, y + 15,GetColor(255, 255, 0), TRUE);    // 黄色の四角
+
+
+	// ===============================
+	// 監視演出（画面赤表示）
+	// ===============================
 
 	// 監視中なら赤表示
 	if (isWatching)
@@ -90,13 +102,16 @@ void Enemy::Draw() const
 		DrawRedScreen(ratio);       // 画面を赤くする
 	}
 
+
+	// ===============================
 	// ゲームオーバー表示
+	// ===============================
 	if (isGameOver)
 	{
-		DrawFormatString(300, 250, GetColor(255, 0, 0),
-			"GAME OVER");
+		DrawFormatString(300, 250, GetColor(255, 0, 0),"GAME OVER");
 	}
 }
+
 
 /// <summary>
 /// 画面全体を赤くする演出
@@ -109,16 +124,21 @@ void Enemy::DrawRedScreen(float alpha) const
 
 	int color = GetColor(255, 0, 0);      // 赤色を取得
 
-	// αブレンド設定（180は最大透明度）
+	// αブレンド設定（180は最大透明度）（最大180で強くなりすぎないよう調整）
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)(alpha * 180));   // 180 にしているのは真っ赤になりすぎないように。
 
-	// 画面全体を塗りつぶす
+	// 画面全体を塗りつぶす（現在800x600固定）
 	DrawBox(0, 0, 800, 600, color, TRUE);
 
 	// ブレンドモードを元に戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+
+/// <summary>
+/// 監視時間リセット処理
+/// プレイヤーが上端到達した時などに呼び出す
+/// </summary>
 void Enemy::ResetWatchTime()
 {
 	watchTime = 0.0f;

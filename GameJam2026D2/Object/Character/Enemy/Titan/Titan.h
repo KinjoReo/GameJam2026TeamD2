@@ -13,6 +13,7 @@ class Player;       // Playerクラスの前方宣言（ヘッダ依存を減らすため）
 class Enemy : public GameObject
 {
 private:
+
 	Player* player;          // 監視対象、監視するプレイヤーへのポインタ
 
 	// 監視システム用変数
