@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+<<<<<<< Updated upstream
     <ClCompile Include="Utility\Input\InputManager.cpp" />
     <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Object\Character\Enemy\EnemyCharacter.cpp" />
@@ -170,6 +171,12 @@
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Utility\Singleton.h" />
     <ClInclude Include="Utility\Vector2D.h" />
+=======
+    <ClCompile Include="Scene\InGame\InGameScene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Scene\InGame\InGameScene.h" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
