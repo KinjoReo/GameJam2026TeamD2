@@ -1,5 +1,6 @@
 #include "InGameScene.h"
 
+
 #include <DxLib.h>
 
 InGameScene::InGameScene()
