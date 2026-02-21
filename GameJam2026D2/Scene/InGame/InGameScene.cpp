@@ -1,9 +1,19 @@
 #include "InGameScene.h"
 
-#include "DxLib.h"
+#include <DxLib.h>
 
 InGameScene::InGameScene()
-	:player(nullptr)
+    :wallHeight(25)
+    , wallTop(80)
+    , InGameBGM(-1)
+    , player(nullptr)
+    , warpImage(-1)
+    , warpScale(1.0f)
+    
+{
+}
+
+InGameScene::~InGameScene()
 {
 }
 
@@ -11,5 +21,51 @@ void InGameScene::Initialize()
 {
 	AssetsContainer* container = AssetsContainer::GetInstance();
 
+	player = new Player;
+	player->Initialize(0);
 
+    InGameBGM = container->GetSound("");
+    ChangeVolumeSoundMem(135, InGameBGM);
+
+    if (InGameBGM != -1)
+    {
+        PlaySoundMem(InGameBGM, DX_PLAYTYPE_LOOP);
+    }
+
+    gWinnerPlayer = -1;
+}
+
+//更新
+eSceneType InGameScene::Update()
+{
+    InputManager* input = InputManager::GetInstance();
+
+    Vector2D prev = player->GetLocatioc();
+
+    player->Update();
+
+    CheckWarp(player, nextWarpTimePlayer);
+
+
+}
+
+//描画
+void InGameScene::Draw()const
+{
+    const int screenW = 1280;
+    const int screenH = 720;
+
+    //外壁 
+
+    //プレイヤー
+    player->Draw;
+}
+
+void InGameScene::Finalize()
+{
+    if (InGameBGM != -1)
+    {
+        StopSoundMem(InGameBGM);
+        DeleteSoundMem(InGameBGM);
+    }
 }
