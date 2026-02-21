@@ -11,7 +11,7 @@
 Enemy::Enemy(Player* target)
 	: player(target),         // 監視対象(プレイヤー)を保存
 	watchTime(0.0f),          // 監視経過時間を0に初期化
-	watchLimit(8.0f),         // 秒数指定してその秒間見られたらゲームオーバー
+	watchLimit(10.0f),         // 秒数指定してその秒間見られたらゲームオーバー
 	isWatching(false),        // 初期状態では監視していない
 	isGameOver(false)         // ゲームオーバーではない(false)
 {

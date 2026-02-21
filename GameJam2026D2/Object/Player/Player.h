@@ -91,7 +91,9 @@ private:
 	float downCooldown = 0.0f;   // しゃがみ後のクールタイム
 	bool wasOnWall = false;      // 前フレームで壁に接触していたか
 	bool isDownPressed;          // 現在しゃがんでいるか
-
+	float wallCooldown = 0.0f;
+	float crouchActiveTime = 0.0f;   // しゃがみ中の硬直時間
+	float crouchCooldown = 0.0f;     // 再しゃがみ待ち時間
 
 	// ========================================
 	// ゲーム進行関連

@@ -64,15 +64,24 @@ void Player::Update(float delta_second)
 
 
 	// =============================
-	// クールタイム減少処理
+	// タイマー減算
 	// =============================
-
-	// クールタイム減少
-	if (downCooldown > 0.0f)
+	if (wallCooldown > 0.0f)
 	{
-		downCooldown -= delta_second;
-		if (downCooldown < 0.0f)
-			downCooldown = 0.0f;
+		wallCooldown -= delta_second;
+		if (wallCooldown < 0.0f) wallCooldown = 0.0f;
+	}
+
+	if (crouchActiveTime > 0.0f)
+	{
+		crouchActiveTime -= delta_second;
+		if (crouchActiveTime < 0.0f) crouchActiveTime = 0.0f;
+	}
+
+	if (crouchCooldown > 0.0f)
+	{
+		crouchCooldown -= delta_second;
+		if (crouchCooldown < 0.0f) crouchCooldown = 0.0f;
 	}
 
 	bool isOnWall = false;   // 壁
@@ -101,7 +110,8 @@ void Player::Update(float delta_second)
 	// 壁に初めて接触したときのみクールタイム発動
 	if (isOnWall && !wasOnWall)
 	{
-		downCooldown = 2.0f;  // 壁クールタイム
+		wallCooldown = 2.0f;  // 壁クールタイム
+		crouchCooldown = 2.0f;   // しゃがみ再使用2秒
 	}
 
 	wasOnWall = isOnWall;
@@ -122,55 +132,28 @@ void Player::Update(float delta_second)
 	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_DOWN);
 
 
-	// しゃがみ状態更新（Enemyが参照）
-	isDownPressed = moveDown;   // しゃがみ
-
-
-
-	//if (isDownPressed)
-	//{
-	//	velocity = Vector2D(0.0f, 0.0f);
-	//}
-
-	//// 右キー
-	//if (!isDownPressed && moveRight && lockDir != LOCK_RIGHT)
-	//{
-	//	if (lockDir != LOCK_RIGHT)  // 右がロックされていない
-	//	{
-	//		velocity.x = 1.0f;
-	//		velocity.y = -0.6f;
-	//	}
-	//}
-
-	//// 左キー
-	//if (!isDownPressed && moveLeft && lockDir != LOCK_LEFT)
-	//{
-	//	if (lockDir != LOCK_LEFT)   // 左がロックされていない
-	//	{
-	//		velocity.x = -1.0f;
-	//		velocity.y = -0.6f;
-	//	}
-	//}
-
-
-
 	// =============================
-	// しゃがみクールタイム開始
-	// =============================
+    // しゃがみ開始判定
+    // クールタイム中はしゃがめない
+    // =============================
+	if (moveDown && crouchCooldown <= 0.0f && crouchActiveTime <= 0.0f)
+    {
+        crouchActiveTime = 5.0f;   // 5秒間しゃがみ硬直
+        crouchCooldown   = 1.0f;   // 再使用1秒
+		// しゃがみ状態更新（Enemyが参照）
+		isDownPressed = moveDown;   // しゃがみ
+    }
 
-	// しゃがみ押した瞬間にクールタイム開始
-	if (moveDown && downCooldown <= 0.0f)
-	{
-		downCooldown = 3.0f;      // 3秒クールタイム
-	}
+    // しゃがみ状態更新
+    isDownPressed = (crouchActiveTime > 0.0f);
 
 
 	// =============================
 	// 移動処理
 	// =============================
 
-	// クールタイム中は動かない
-	if (downCooldown > 0.0f)
+	// 壁硬直 or しゃがみ硬直中は動けない
+	if (wallCooldown > 0.0f || crouchActiveTime > 0.0f)
 	{
 		velocity = Vector2D(0.0f, 0.0f);
 	}
