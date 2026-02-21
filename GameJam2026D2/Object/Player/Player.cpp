@@ -4,6 +4,10 @@
 #include <cmath>
 
 
+/// <summary>
+/// コンストラクタ
+/// 各種変数の初期化を行う
+/// </summary>
 Player::Player():
 	move_animation(),
 	dying_animation(),
@@ -15,27 +19,50 @@ Player::Player():
 {
 }
 
+/// <summary>
+/// デストラクタ
+/// </summary>
 Player::~Player()
 {
 }
 
+/// <summary>
+/// 初期化処理
+/// プレイヤーの初期位置や初期状態を設定する
+/// </summary>
 void Player::Initialize()
 {
-	/*image = move_animation[0];*/
+
+	// 初期位置（画面下側中央）
 	location = Vector2D(300, 500); // 画面中央あたり
 
+	// 上端到達回数リセット
 	reachTopCount = 0;
 
+	// 移動制限なし
 	lockDir = NONE;
 
 	isDownPressed = false;
+
+	/*image = move_animation[0];*/
+
 }
 
+/// <summary>
+/// 毎フレーム更新処理
+/// 入力・移動・制限処理などを行う
+/// </summary>
+/// <param name="delta_second">1フレームあたりの経過時間</param>
 void Player::Update(float delta_second)
 {
 	
 	float speed = 0.5f;
 	velocity = Vector2D(0.0f, 0.0f);
+
+
+	// =============================
+	// クールタイム減少処理
+	// =============================
 
 	// クールタイム減少
 	if (downCooldown > 0.0f)
@@ -46,6 +73,11 @@ void Player::Update(float delta_second)
 	}
 
 	bool isOnWall = false;
+
+
+	// =============================
+	// 壁判定（左右）
+	// =============================
 
 	// 右壁に到達
 	if (location.x >= 290)
@@ -63,7 +95,7 @@ void Player::Update(float delta_second)
 		isOnWall = true;
 	}
 
-	// 壁に「今フレーム初めて」当たった時だけ
+	// 壁に「今フレーム初めて」接触したときのみクールタイム発動
 	if (isOnWall && !wasOnWall)
 	{
 		downCooldown = 2.0f;  // 壁クールタイム
@@ -72,6 +104,9 @@ void Player::Update(float delta_second)
 	wasOnWall = isOnWall;
 
 	
+	// =============================
+	// 入力取得
+	// =============================
 
 	// ----- 入力処理 -----
 
@@ -83,7 +118,11 @@ void Player::Update(float delta_second)
 	bool moveLeft = CheckHitKey(KEY_INPUT_LEFT) || (pad & PAD_INPUT_LEFT);
 	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_DOWN);
 
-	isDownPressed = moveDown;   // 青くなる
+
+	// しゃがみ状態更新（Enemyが参照）
+	isDownPressed = moveDown;   // しゃがみ
+
+
 
 	//if (isDownPressed)
 	//{
@@ -110,11 +149,22 @@ void Player::Update(float delta_second)
 	//	}
 	//}
 
+
+
+	// =============================
+	// しゃがみクールタイム開始
+	// =============================
+
 	// しゃがみ押した瞬間にクールタイム開始
 	if (moveDown && downCooldown <= 0.0f)
 	{
 		downCooldown = 3.0f;      // 3秒クールタイム
 	}
+
+
+	// =============================
+	// 移動処理
+	// =============================
 
 	// クールタイム中は動かない
 	if (downCooldown > 0.0f)
@@ -138,7 +188,11 @@ void Player::Update(float delta_second)
 		}
 	}
 
-	// 正規化
+	
+	// =============================
+	// ベクトル正規化
+	// =============================
+
 	float length = sqrtf(velocity.x * velocity.x + velocity.y * velocity.y);
 
 	if (length > 0.0f)
@@ -147,11 +201,19 @@ void Player::Update(float delta_second)
 		velocity.y = (velocity.y / length) * speed;
 	}
 
+
+	// =============================
+	// 位置更新
+	// =============================
+
 	// 移動
 	location += velocity;
 	
 
-	// Y制限
+	// =============================
+	// Y座標制限
+	// =============================
+
 	if (location.y <= 100.0f)
 	{
 		location.y = 100.0f;
@@ -161,23 +223,21 @@ void Player::Update(float delta_second)
 	{
 		location.y = 300.0f;
 	}
-
-	//if (location.y < 100) {
-	//	// プレイヤーが上端に到達した
-	//	location.y = 100;      // Y制限
-	//	OnReachTop();          // 暗転＋リスタート
-	//}
-	// else は何もしない（＝止まる）
 }
 
+
+/// <summary>
+/// 描画処理
+/// プレイヤー本体とUI表示
+/// </summary>
 void Player::Draw() const
 {
-    //__super::Draw();
 
-	DrawFormatString(50, 50, GetColor(255, 255, 255),
-		"% d", reachTopCount);
+	// 上端到達回数表示
+	DrawFormatString(50, 50, GetColor(255, 255, 255),"% d", reachTopCount);
 
 
+	// しゃがみ中は青、それ以外は赤
 	int color;
 
 	if (isDownPressed)
@@ -197,6 +257,11 @@ void Player::Draw() const
 
 }
 
+
+/// <summary>
+/// 終了処理
+/// 動的配列の解放
+/// </summary>
 void Player::Finalize()
 {
 	// 動的配列の解放
@@ -204,12 +269,16 @@ void Player::Finalize()
 	dying_animation.clear();
 }
 
+
+
 //void Player::OnHitCollision(GameObjectBase* hit_object)
 //{
 //}
 
+
+
 /// <summary>
-/// 移動処理
+/// 移動処理（現在は未使用）
 /// </summary>
 /// <param name="delta_second">1フレームあたりの時間</param>
 void Player::Movement(float delta_second)
@@ -217,6 +286,7 @@ void Player::Movement(float delta_second)
 	// velocityを使ってプレイヤーの位置座標を変更する
 	location += velocity;
 }
+
 
  //<summary>
  //アニメーション制御
@@ -241,15 +311,23 @@ void Player::AnimationControl(float delta_second)
 }
 
 
+/// <summary>
+/// 画面暗転演出
+/// </summary>
 void Player::DrawDarkScreen(float alpha)
 {
 	// alpha = 0.0f ~ 1.0f
 	int color = GetColor(50, 50, 80);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)(alpha * 255));
-	DrawBox(0, 0, 800, 600, color, TRUE); // 画面全体を黒で塗る
+	DrawBox(0, 0, 800, 600, color, TRUE);            // 画面全体を塗る
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+
+/// <summary>
+/// 上端到達時処理
+/// フェードアウト → 位置リセット → フェードイン
+/// </summary>
 void Player::OnReachTop()
 {
 
