@@ -75,7 +75,7 @@ void Player::Update(float delta_second)
 			downCooldown = 0.0f;
 	}
 
-	bool isOnWall = false;
+	bool isOnWall = false;   // •Ç
 
 
 	// =============================
