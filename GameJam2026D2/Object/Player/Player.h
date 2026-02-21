@@ -4,13 +4,20 @@
 #include <vector>
 #include "../../Utility/Vector2D.h"
 
+
+// ============================================================
 // プレイヤー状態を表す列挙型
+// ============================================================
+/// <summary>
+/// プレイヤーの現在状態
+/// </summary>
 enum ePlayerState
 {
 	IDLE,		// 待機状態
 	MOVE,		// 移動状態
 	DIE,		// 死亡状態
 };
+
 
 // ========================================
 // 壁接触時の移動制限方向
@@ -27,7 +34,12 @@ enum LockDirection
 };
 
 
-class Enemy;
+class Enemy;        // Enemyクラスの前方宣言
+
+
+// ============================================================
+// Player クラス
+// ============================================================
 
 // プレイヤークラス（主人公）
 // 移動・しゃがみ・壁制限・到達カウントなどを管理する
@@ -58,7 +70,7 @@ private:
 	int animation_count;					// アニメーション番号
 
 	// 移動アニメーションの順番
-	const int animation_num[4] = { 1, 2, 3, 2, };
+	const int animation_num[4] = { 1, 2, 3, 2, };    // 再生順
 
 
 	// ========================================
@@ -95,7 +107,18 @@ private:
 	int GetReachTopCount() const { return reachTopCount; }      // もし外から参照したいなら
 
 
+	/// <summary>
+	/// 監視エネミーへの参照
+	/// 上端到達時に監視時間をリセットするため使用
+	/// </summary>
 	Enemy* enemy;   // 監視エネミー
+
+
+	/// <summary>
+	/// このフレームで上端到達したかどうか
+	/// 外部（Sceneなど）への通知用
+	/// </summary>
+	bool reachedTopThisFrame = false;
 
 
 public:
@@ -130,16 +153,25 @@ public:
 	/// </summary>
 	bool IsHidden() const { return isDownPressed; }
 
+
 	/// <summary>
 	/// 現在位置を取得（追跡用など）
 	/// </summary>
 	Vector2D GetLocation() const { return location; }
 
 
-	bool reachedTopThisFrame = false;
-
+	/// <summary>
+	/// 上端到達したかどうか取得
+	/// </summary>
 	bool DidReachTop() const { return reachedTopThisFrame; }
+
+
+	/// <summary>
+	/// 到達フラグリセット
+	/// </summary>
 	void ResetReachFlag() { reachedTopThisFrame = false; }
+
+
 
 	/// <summary>
 	/// 当たり判定通知処理
@@ -175,11 +207,15 @@ private:
 
 
 	/// <summary>
-	/// 上端到達時の処理
+	/// 上端到達時処理
+	/// フェード演出＋位置リセット
 	/// </summary>
 	void OnReachTop();
 
 
+	/// <summary>
+	/// Enemy設定
+	/// </summary>
 	void SetEnemy(Enemy* e) { enemy = e; }
 
 };

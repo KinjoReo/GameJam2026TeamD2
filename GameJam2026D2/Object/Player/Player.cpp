@@ -35,15 +35,16 @@ Player::~Player()
 void Player::Initialize()
 {
 
-	// 初期位置（画面下側中央）
-	location = Vector2D(300, 500); // 画面中央あたり
+	// 初期位置（現在画面下側中央）
+	location = Vector2D(300, 500);
 
 	// 上端到達回数リセット
 	reachTopCount = 0;
 
-	// 移動制限なし
+	// 移動制限なし、壁方向制限解除
 	lockDir = NONE;
 
+	// しゃがみ解除
 	isDownPressed = false;
 
 	/*image = move_animation[0];*/
@@ -97,7 +98,7 @@ void Player::Update(float delta_second)
 		isOnWall = true;
 	}
 
-	// 壁に「今フレーム初めて」接触したときのみクールタイム発動
+	// 壁に初めて接触したときのみクールタイム発動
 	if (isOnWall && !wasOnWall)
 	{
 		downCooldown = 2.0f;  // 壁クールタイム
@@ -213,7 +214,7 @@ void Player::Update(float delta_second)
 	
 
 	// =============================
-	// Y座標制限
+	// Y座標制限・上端判定
 	// =============================
 
 	if (location.y <= 100.0f)
@@ -230,7 +231,7 @@ void Player::Update(float delta_second)
 
 /// <summary>
 /// 描画処理
-/// プレイヤー本体とUI表示
+/// プレイヤー本体とUI表示、上端到達回数表示
 /// </summary>
 void Player::Draw() const
 {
@@ -315,6 +316,7 @@ void Player::AnimationControl(float delta_second)
 
 /// <summary>
 /// 画面暗転演出
+/// alpha値に応じて画面全体をフェードさせる
 /// </summary>
 void Player::DrawDarkScreen(float alpha)
 {
@@ -328,6 +330,9 @@ void Player::DrawDarkScreen(float alpha)
 
 /// <summary>
 /// 上端到達時処理
+/// 到達回数加算
+/// Enemy監視時間リセット
+/// フェード演出
 /// フェードアウト → 位置リセット → フェードイン
 /// </summary>
 void Player::OnReachTop()
