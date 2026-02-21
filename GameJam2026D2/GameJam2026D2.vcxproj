@@ -143,17 +143,8 @@
     <ClCompile Include="Utility\Collision.cpp" />
     <ClCompile Include="Utility\ResourceManager.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="title\TitleScene.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.05.32.png" />
-    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.16.png" />
-    <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.06.35.png" />
-    <Image Include="assets\images\Title.png" />
-    <Image Include="assets\images\Titlee.png" />
-    <Image Include="assets\images\Titleee.png" />
+	<ClCompile Include="Scene\InGame\InGameScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utility\Input\InputManager.h" />
@@ -170,6 +161,7 @@
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Utility\Singleton.h" />
     <ClInclude Include="Utility\Vector2D.h" />
+    <ClInclude Include="Scene\InGame\InGameScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
