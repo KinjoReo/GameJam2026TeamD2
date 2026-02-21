@@ -118,3 +118,9 @@ void Enemy::DrawRedScreen(float alpha) const
 	// ブレンドモードを元に戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
+
+void Enemy::ResetWatchTime()
+{
+	watchTime = 0.0f;
+	isWatching = false;
+}

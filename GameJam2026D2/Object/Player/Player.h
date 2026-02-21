@@ -27,7 +27,7 @@ enum LockDirection
 };
 
 
-
+class Enemy;
 
 // プレイヤークラス（主人公）
 // 移動・しゃがみ・壁制限・到達カウントなどを管理する
@@ -95,6 +95,8 @@ private:
 	int GetReachTopCount() const { return reachTopCount; }      // もし外から参照したいなら
 
 
+	Enemy* enemy;   // 監視エネミー
+
 
 public:
 
@@ -134,6 +136,11 @@ public:
 	Vector2D GetLocation() const { return location; }
 
 
+	bool reachedTopThisFrame = false;
+
+	bool DidReachTop() const { return reachedTopThisFrame; }
+	void ResetReachFlag() { reachedTopThisFrame = false; }
+
 	/// <summary>
 	/// 当たり判定通知処理
 	/// </summary>
@@ -171,5 +178,8 @@ private:
 	/// 上端到達時の処理
 	/// </summary>
 	void OnReachTop();
+
+
+	void SetEnemy(Enemy* e) { enemy = e; }
 
 };

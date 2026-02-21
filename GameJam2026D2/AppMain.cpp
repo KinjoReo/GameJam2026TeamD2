@@ -30,6 +30,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		player.Draw();         // 一旦
 		enemy.Draw();          // 一旦
 
+		// プレイヤーが上端に到達したら監視リセット
+		if (player.DidReachTop())
+		{
+			enemy.ResetWatchTime();
+			player.ResetReachFlag();
+		}
+
 		// ここで毎フレームの更新処理（点滅フラグの切り替えなど）を行う
 		/* TitleUpdate();*/ // もし更新関数を作ったらここに入れる
 

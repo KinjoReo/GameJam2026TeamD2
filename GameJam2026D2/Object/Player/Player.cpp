@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "DxLib.h"
+#include "../Character/Enemy/Titan/Titan.h"
 
 #include <cmath>
 
@@ -15,7 +16,8 @@ Player::Player():
 	player_state(ePlayerState::IDLE),
 	animation_time(0.0f),
 	animation_count(0),
-	back_ground_sound(NULL)
+	back_ground_sound(NULL),
+	enemy(nullptr)
 {
 }
 
@@ -332,6 +334,14 @@ void Player::OnReachTop()
 {
 
 	reachTopCount++;
+
+	reachedTopThisFrame = true;
+
+	// エネミーが存在するなら監視リセット
+	if (enemy != nullptr)
+	{
+		enemy->ResetWatchTime();
+	}
 
 	// 画面暗転フェードアウト
 	for (float alpha = 0.0f; alpha <= 1.0f; alpha += 0.05f)

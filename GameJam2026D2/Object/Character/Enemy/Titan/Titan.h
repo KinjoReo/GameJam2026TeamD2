@@ -62,6 +62,11 @@ public:
 	void DrawRedScreen(float alpha) const;
 
 	/// <summary>
+    /// 監視時間をリセットする
+    /// </summary>
+	void ResetWatchTime();
+
+	/// <summary>
 	/// ゲームオーバー状態を取得する
 	/// </summary>
 	/// <returns>true = ゲームオーバー</returns>
