@@ -132,9 +132,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Utility\Input\InputManager.cpp" />
+    <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
+    <ClCompile Include="Object\Character\Enemy\EnemyCharacter.cpp" />
+    <ClCompile Include="Object\Character\Enemy\First\Nightmare.cpp" />
     <ClCompile Include="Object\Character\Enemy\Titan\Titan.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
     <ClCompile Include="Object\Player\Player.cpp" />
+    <ClCompile Include="Object\Character\Enemy\First\Projecttile.cpp" />
+    <ClCompile Include="Utility\Collision.cpp" />
+    <ClCompile Include="Utility\ResourceManager.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,10 +156,19 @@
     <Image Include="assets\images\Titleee.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Utility\Input\InputManager.h" />
+    <ClInclude Include="Object\Character\Enemy\EnemyBase.h" />
+    <ClInclude Include="Object\Character\Enemy\EnemyCharacter.h" />
+    <ClInclude Include="Object\Character\Enemy\First\Nightmare.h" />
     <ClInclude Include="Object\Character\Enemy\Titan\Titan.h" />
     <ClInclude Include="Object\GameObject.h" />
+    <ClInclude Include="Object\GameObjectManager.h" />
     <ClInclude Include="Object\Player\Player.h" />
+    <ClInclude Include="Object\Character\Enemy\First\Projecttile.h" />
     <ClInclude Include="title\TitleScene.h" />
+    <ClInclude Include="Utility\Collision.h" />
+    <ClInclude Include="Utility\ResourceManager.h" />
+    <ClInclude Include="Utility\Singleton.h" />
     <ClInclude Include="Utility\Vector2D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

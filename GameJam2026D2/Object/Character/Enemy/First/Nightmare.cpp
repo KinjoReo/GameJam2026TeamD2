@@ -1,16 +1,17 @@
 #include "Nightmare.h"
 #include "../../../GameObjectManager.h"
+#include "Projecttile.h"
 
 //コンストラクタ
 Nightmare::Nightmare()
 {
-	count++;
+
 }
 
 //デストラクタ
 Nightmare::~Nightmare()
 {
-	count--;
+
 }
 
 void Nightmare::Initialize()
@@ -18,7 +19,7 @@ void Nightmare::Initialize()
 	//親クラスの初期化
 	__super::Initialize();
 
-	//子リジョンの設定
+	//コリジョンの設定
 	collision.collision_size = Vector2D(180.0f, 180.0f);
 	collision.hitbox_size = Vector2D(200.0f, 300.0f);
 	z_layer = 2;
@@ -95,6 +96,19 @@ void Nightmare::Movement(float delta_second)
 	__super::Movement(delta_second);
 }
 
+//攻撃処理
+void Nightmare::Attack(GameObject* hit_object)
+{
+	//攻撃SE再生
+	PlaySoundMem(SE[0],DX_PLAYTYPE_BACK);
+
+	Projecttile* hand;
+	GameObjectManager* object = GameObjectManager::GetInstance();
+	hand = object->CreateObject<Projecttile>(Vector2D(location.x + 20.0f, location.y - 5.0f));
+	hand->SetTargetLocation(hit_object->GetLocation());
+	hand->SetDamage(Damage);
+}
+
 // アニメーション制御処理
 void Nightmare::AnimationControl(float delta_second)
 {
@@ -135,8 +149,8 @@ void Nightmare::AnimationControl(float delta_second)
 	__super::AnimationControl(delta_second);
 }
 // エフェクト制御処理
-void Nightmare::EffectControl(float delta_second)
-{
-	// 親クラスのエフェクト
-	__super::EffectControl(delta_second);
-}
+//void Nightmare::EffectControl(float delta_second)
+//{
+//	// 親クラスのエフェクト
+//	__super::EffectControl(delta_second);
+//}

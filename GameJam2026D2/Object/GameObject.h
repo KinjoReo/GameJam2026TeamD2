@@ -14,6 +14,7 @@ protected:
 	int z_layer;				//レイヤー情報
 	bool is_mobility;			//可動性
 	bool is_aggressive;			// 攻撃性
+	float HP;					//キャラクターのHP
 
 	class InGame* Ingame;		//InGameのポインター
 
@@ -101,6 +102,18 @@ public:
 	/// </summary>
 	/// <returns>可動性情報</returns>
 	const bool GetMobility() const;
+
+	/// <summary>
+	/// HP管理処理
+	/// </summary>
+	/// <param name="hit_object">ダメージ</param>
+	virtual void HPControl(float Damage);
+
+	/// <summary>
+	/// HP取得処理
+	/// </summary>
+	/// <returns>HPの情報</returns>
+	const virtual int GetHP() const;
 
 	/// <summary>
 	/// InGameの情報取得
