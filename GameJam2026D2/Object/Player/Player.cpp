@@ -129,7 +129,7 @@ void Player::Update(float delta_second)
 	// ----- 移動判定（キーボード or パッド） -----
 	bool moveRight = CheckHitKey(KEY_INPUT_RIGHT) || (pad & PAD_INPUT_RIGHT);
 	bool moveLeft = CheckHitKey(KEY_INPUT_LEFT) || (pad & PAD_INPUT_LEFT);
-	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_DOWN);
+	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_B);
 
 
 	// =============================
