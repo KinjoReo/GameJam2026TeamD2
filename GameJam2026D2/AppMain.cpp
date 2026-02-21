@@ -2,6 +2,7 @@
 #include"title/TitleScene.h" // TitleInit, TitleDraw ‚ª’è‹`‚³‚ê‚Ä‚¢‚éƒwƒbƒ_
 #include"Object/Player/Player.h"
 #include"Object/Character/Enemy/Titan/Titan.h"
+#include"Object/Character/Enemy/YamoriHebi/YamoriHebi.h"
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_
 	LPSTR lpCmdLine, _In_ int nShowCmd)
@@ -19,6 +20,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Enemy enemy(&player);   // ˆê’U
 	enemy.Initialize();     // ˆê’U
 
+	Enemy2* enemy2 = new Enemy2(&player);   // ˆê’U
+	enemy2->Initialize();            // ˆê’U
+
 
 	while (ProcessMessage() == 0 && ClearDrawScreen() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -27,13 +31,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		player.Update(delta);      // ˆê’U‚±‚±‚É‘‚¢‚Ä‚é
 		enemy.Update(delta);   // ˆê’U
+		enemy2->Update(delta);   // ˆê’U
+
 		player.Draw();         // ˆê’U
 		enemy.Draw();          // ˆê’U
+		enemy2->Draw();        // ˆê’U
 
 		// ƒvƒŒƒCƒ„[‚ªã’[‚É“ž’B‚µ‚½‚çŠÄŽ‹ƒŠƒZƒbƒg
 		if (player.DidReachTop())
 		{
 			enemy.ResetWatchTime();
+
+			enemy2->ResetPosition();
+
 			player.ResetReachFlag();
 		}
 
@@ -50,6 +60,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	player.Finalize();           // ˆê’U
 
 	WaitKey();
+
+	delete enemy2;
 
 	DxLib_End();
 

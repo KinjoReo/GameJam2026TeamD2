@@ -10,7 +10,7 @@ class Player;       // Playerクラスの前方宣言（ヘッダ依存を減らすため）
 /// プレイヤーを監視するエネミークラス
 /// 一定時間見続けるとゲームオーバーにする
 /// </summary>
-class Enemy : public GameObject
+class Enemy : public GameObject                                   // TitanはEnemy
 {
 private:
 

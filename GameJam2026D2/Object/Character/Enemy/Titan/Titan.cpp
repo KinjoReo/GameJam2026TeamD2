@@ -8,7 +8,7 @@
 /// 監視対象のプレイヤーを受け取り、各種変数を初期化する
 /// </summary>
 /// <param name="target">監視するプレイヤー</param>
-Enemy::Enemy(Player* target)
+Enemy::Enemy(Player* target)                                                 // TitanはEnemy
 	: player(target),         // 監視対象(プレイヤー)を保存
 	watchTime(0.0f),          // 監視経過時間を0に初期化
 	watchLimit(10.0f),         // 秒数指定してその秒間見られたらゲームオーバー
