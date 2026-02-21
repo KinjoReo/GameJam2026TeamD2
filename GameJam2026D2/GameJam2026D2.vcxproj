@@ -132,10 +132,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Object\Character\Enemy\Titan\Titan.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
     <ClCompile Include="Object\Player\Player.cpp" />
-    <ClCompile Include="title\TitleScene.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="title\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Downloads\2026-02-20_10.05.32.png" />
@@ -146,6 +149,7 @@
     <Image Include="assets\images\Titleee.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Character\Enemy\Titan\Titan.h" />
     <ClInclude Include="Object\GameObject.h" />
     <ClInclude Include="Object\Player\Player.h" />
     <ClInclude Include="title\TitleScene.h" />
