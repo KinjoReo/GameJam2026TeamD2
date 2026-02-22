@@ -2,6 +2,8 @@
 
 #include "../../Object/Player/Player.h"
 #include "../../Scenes/SceneBase/SceneBase.h"
+#include "../../Object/Character/Enemy/Titan/Titan.h"
+#include "../../Object/Character/Enemy/YamoriHebi/YamoriHebi.h"
 
 class InGameScene : public SceneBase
 {
@@ -10,7 +12,14 @@ private:
     int wallTop;
 
     Player* player = nullptr;
+    Enemy* enemy = nullptr;
+    Enemy2* enemy2 = nullptr;
 
+    int backgroundImage = -1;
+
+    int backgroundImage2 = -1;
+
+    int backgroundImage3 = -1;
 
     // BGM
     int InGameBGM = -1;
