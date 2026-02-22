@@ -1,5 +1,6 @@
 #include"DxLib.h"
 #include"title/TitleScene.h" // TitleInit, TitleDraw ‚ª’è‹`‚³‚ê‚Ä‚¢‚éƒwƒbƒ_
+#include"Scene/InGame/InGameScene.h"
 #include"Object/Player/Player.h"
 #include"Object/Character/Enemy/Titan/Titan.h"
 #include"Object/Character/Enemy/YamoriHebi/YamoriHebi.h"
@@ -14,14 +15,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	Player player;              // ˆê’U‚±‚±‚É‘‚¢‚Ä‚é
-	player.Initialize();        // ˆê’U
+	// Œ»İ‚ÌƒV[ƒ“
+	eSceneType scene = eSceneType::eTitle;
 
-	Enemy enemy(&player);   // ˆê’U
-	enemy.Initialize();     // ˆê’U
+	// InGameScene¶¬
+	InGameScene inGame;
 
-	Enemy2* enemy2 = new Enemy2(&player);   // ˆê’U
-	enemy2->Initialize();            // ˆê’U
+	// Title‰Šú‰»
+	TitleInit();
+
+	//Player player;              // ˆê’U‚±‚±‚É‘‚¢‚Ä‚é
+	//player.Initialize();        // ˆê’U
+
+	//Enemy enemy(&player);   // ˆê’U
+	//enemy.Initialize();     // ˆê’U
+
+	//Enemy2* enemy2 = new Enemy2(&player);   // ˆê’U
+	//enemy2->Initialize();            // ˆê’U
 
 
 	while (ProcessMessage() == 0 && ClearDrawScreen() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -29,39 +39,58 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		float delta = 1.0f / 60.0f;
 
-		player.Update(delta);      // ˆê’U‚±‚±‚É‘‚¢‚Ä‚é
-		enemy.Update(delta);   // ˆê’U
-		enemy2->Update(delta);   // ˆê’U
+		//player.Update(delta);      // ˆê’U‚±‚±‚É‘‚¢‚Ä‚é
+		//enemy.Update(delta);   // ˆê’U
+		//enemy2->Update(delta);   // ˆê’U
 
-		player.Draw();         // ˆê’U
-		enemy.Draw();          // ˆê’U
-		enemy2->Draw();        // ˆê’U
+		//player.Draw();         // ˆê’U
+		//enemy.Draw();          // ˆê’U
+		//enemy2->Draw();        // ˆê’U
 
 		// ƒvƒŒƒCƒ„[‚ªã’[‚É“’B‚µ‚½‚çŠÄ‹ƒŠƒZƒbƒg
-		if (player.DidReachTop())
+		/*if (player.DidReachTop())
 		{
 			enemy.ResetWatchTime();
 
 			enemy2->ResetPosition();
 
 			player.ResetReachFlag();
-		}
+		}*/
 
 		// ‚±‚±‚Å–ˆƒtƒŒ[ƒ€‚ÌXVˆ—i“_–Åƒtƒ‰ƒO‚ÌØ‚è‘Ö‚¦‚È‚Çj‚ğs‚¤
 		/* TitleUpdate();*/ // ‚à‚µXVŠÖ”‚ğì‚Á‚½‚ç‚±‚±‚É“ü‚ê‚é
 
-		//•`‰æŠÖ”‚ÌŒÄ‚Ño‚µ
-		TitleDraw();
+		switch (scene)
+		{
+		case eTitle:
+			scene = TitleUpdate(delta);
+			TitleDraw();
+			break;
+
+		case eInGame:
+		{
+			static bool first = true;
+			if (first)
+			{
+				inGame.Initialize();
+				first = false;
+			}
+
+			scene = inGame.Update();   // © –ß‚è’l‚ğó‚¯æ‚é
+			inGame.Draw();
+		}
+		break;
+		}
 
 		//— ‰æ–Ê‚Ì“à—e‚ğ•\‰æ–Ê‚É”½‰f
 		ScreenFlip();
 	}
 
-	player.Finalize();           // ˆê’U
+	//player.Finalize();           // ˆê’U
 
 	WaitKey();
 
-	delete enemy2;
+	/*delete enemy2;*/
 
 	DxLib_End();
 

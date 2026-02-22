@@ -2,70 +2,80 @@
 
 #include <DxLib.h>
 
+// =============================
+// コンストラクタ
+// =============================
 InGameScene::InGameScene()
-    :wallHeight(25)
+    : wallHeight(25)
     , wallTop(80)
-    , InGameBGM(-1)
     , player(nullptr)
-    , warpImage(-1)
-    , warpScale(1.0f)
-    
+    , InGameBGM(-1)
 {
 }
 
+// =============================
+// デストラクタ
+// =============================
 InGameScene::~InGameScene()
 {
+    if (player)
+    {
+        delete player;
+        player = nullptr;
+    }
 }
 
+// =============================
+// 初期化
+// =============================
 void InGameScene::Initialize()
 {
-	AssetsContainer* container = AssetsContainer::GetInstance();
+    player = new Player();
+    player->Initialize();   // 引数なしで呼ぶ
 
-	player = new Player;
-	player->Initialize(0);
-
-    InGameBGM = container->GetSound("");
-    ChangeVolumeSoundMem(135, InGameBGM);
-
-    if (InGameBGM != -1)
-    {
-        PlaySoundMem(InGameBGM, DX_PLAYTYPE_LOOP);
-    }
-
-    gWinnerPlayer = -1;
+    // BGMがあるならここで読み込み
+    // InGameBGM = LoadSoundMem("bgm.wav");
+    // PlaySoundMem(InGameBGM, DX_PLAYTYPE_LOOP);
 }
 
-//更新
+// =============================
+// 更新
+// =============================
 eSceneType InGameScene::Update()
 {
-    InputManager* input = InputManager::GetInstance();
+    float delta = 1.0f / 60.0f;
 
-    Vector2D prev = player->GetLocatioc();
+    player->Update(delta);
 
-    player->Update();
+    // ESCでタイトルへ戻る例
+    if (CheckHitKey(KEY_INPUT_ESCAPE))
+    {
+        return eSceneType::eTitle;
+    }
 
-    CheckWarp(player, nextWarpTimePlayer);
-
-
+    return eSceneType::eInGame;
 }
 
-//描画
+// =============================
+// 描画
+// =============================
 void InGameScene::Draw()const
 {
-    const int screenW = 1280;
-    const int screenH = 720;
-
-    //外壁 
-
-    //プレイヤー
-    player->Draw;
+    if (player)
+    {
+        player->Draw();
+    }
 }
 
+// =============================
+// 終了処理
+// =============================
 void InGameScene::Finalize()
 {
     if (InGameBGM != -1)
     {
         StopSoundMem(InGameBGM);
         DeleteSoundMem(InGameBGM);
+        InGameBGM = -1;
     }
 }

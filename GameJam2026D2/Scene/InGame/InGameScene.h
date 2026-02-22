@@ -1,31 +1,31 @@
 #pragma once
 
-#include "Object/Player/Player.h"
+#include "../../Object/Player/Player.h"
+#include "../../Scenes/SceneBase/SceneBase.h"
 
 class InGameScene : public SceneBase
 {
 private:
-	int wallHeight;
-	int wallTop;
-	Player* player;
+    int wallHeight;
+    int wallTop;
 
-	//BGM
-	int InGameBGM = -1;
+    Player* player = nullptr;
 
-public:
-	InGameScene();
-	virtual ~InGameScene();
 
-private:
-	virtual void Initialize() override;
-	virtual eSceneType Update() override;
-	virtual void Draw() const override;
-	virtual void Finalize() override;
+    // BGM
+    int InGameBGM = -1;
 
 public:
-	virtual eSceneType GetNowSceneType() const override
-	{
-		return eSceneType::eInGame;
-	}
+    InGameScene();
+    virtual ~InGameScene();
 
+    void Initialize() override;
+    eSceneType Update() override;
+    void Draw() const override;
+    void Finalize() override;
+
+    eSceneType GetNowSceneType() const override
+    {
+        return eSceneType::eInGame;   // enum class‘Î‰ž
+    }
 };
