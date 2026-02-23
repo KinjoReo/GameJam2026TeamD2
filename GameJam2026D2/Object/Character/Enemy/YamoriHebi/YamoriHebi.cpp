@@ -22,6 +22,8 @@ void Enemy2::Initialize()
     // 画面下から出現
     location = Vector2D(1400, 1000);
 
+    isActive = false;
+
     YamoriHebiimage = LoadGraph("Resource/Illustrator/Character/Enemy/YamoriHebi/YamoriHebi.png");
 
     if (YamoriHebiimage == -1)
@@ -33,6 +35,8 @@ void Enemy2::Initialize()
 void Enemy2::Update(float delta_second)
 {
     if (player == nullptr) return;
+
+    if (!isActive) return;
 
     // ===== スピード切り替え =====
     float targetSpeed = player->IsHidden() ? 0.35f : 0.05f;     // しゃがみ中は速い、0.05fは通常速度
@@ -67,6 +71,8 @@ void Enemy2::Draw() const
 {
     if (YamoriHebiimage == -1) return;
 
+    if (!isActive) return;
+
     // 画像の中心を基準に描く
     DrawRotaGraph(
         (int)location.x,
@@ -92,4 +98,10 @@ void Enemy2::ResetPosition()
     location = Vector2D(1400, 1000);
     velocity = Vector2D(0, 0);
     watchTime = 0.0f;
+    isActive = true;   // 出現ON
+}
+
+void Enemy2::Hide()
+{
+    isActive = false;
 }

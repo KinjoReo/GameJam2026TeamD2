@@ -103,11 +103,6 @@ private:
 	int back_ground_sound;		 // 音源、後ろで流れるBGMやSE
 
 
-	/// <summary>
-	/// 上端到達回数取得（内部用）
-	/// </summary>
-	int GetReachTopCount() const { return reachTopCount; }      // もし外から参照したいなら
-
 
 	/// <summary>
 	/// 監視エネミーへの参照
@@ -174,6 +169,10 @@ public:
 	void ResetReachFlag() { reachedTopThisFrame = false; }
 
 
+	/// <summary>
+	/// 上端到達回数取得（内部用）
+	/// </summary>
+	int GetReachTopCount() const { return reachTopCount; }      // もし外から参照したいなら
 
 	/// <summary>
 	/// 当たり判定通知処理

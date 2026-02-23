@@ -33,6 +33,12 @@ public:
     void Draw() const override;
     void Finalize() override;
 
+    Enemy* titan;
+    Enemy2* yamorihebi;
+
+    bool spawnTitan;
+    bool spawnYamoriHebi;
+
     eSceneType GetNowSceneType() const override
     {
         return eSceneType::eInGame;   // enum class‘Î‰ž

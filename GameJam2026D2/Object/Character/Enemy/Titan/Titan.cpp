@@ -13,7 +13,8 @@ Enemy::Enemy(Player* target)                                                 // 
 	watchTime(0.0f),          // 監視経過時間を0に初期化
 	watchLimit(22.0f),         // 秒数指定してその秒間見られたらゲームオーバー
 	isWatching(false),        // 初期状態では監視していない
-	isGameOver(false)         // ゲームオーバーではない(false)
+	isGameOver(false),         // ゲームオーバーではない(false)
+	isActive(false)
 {
 }
 
@@ -51,6 +52,7 @@ void Enemy::Initialize()
 /// <param name="delta_second">1フレームあたりの経過時間</param>
 void Enemy::Update(float delta_second)
 {
+	if (!isActive) return;   // 出現していなければ何もしない
 	if (isGameOver) return;               // すでにゲームオーバーなら何もしない
 
 	// プレイヤーが隠れていないなら監視
@@ -81,6 +83,7 @@ void Enemy::Update(float delta_second)
 /// </summary>
 void Enemy::Draw() const
 {
+	if (!isActive) return;
 
 	// ===============================
 	// エネミー本体描画
@@ -165,4 +168,18 @@ void Enemy::Finalize()
 		DeleteGraph(Titanimage);
 		Titanimage = -1;
 	}
+}
+
+void Enemy::Spawn()
+{
+	location = Vector2D(400, 1000);
+	watchTime = 0.0f;
+	isWatching = false;
+	isGameOver = false;
+	isActive = true;
+}
+
+void Enemy::Hide()
+{
+	isActive = false;
 }

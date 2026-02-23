@@ -79,4 +79,10 @@ public:
 	/// </summary>
 	/// <returns>true = ゲームオーバー</returns>
 	bool IsGameOver() const { return isGameOver; }
+
+
+	bool isActive;      // 出現しているか
+
+	void Spawn();
+	void Hide();
 };

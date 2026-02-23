@@ -2,6 +2,10 @@
 
 #include <DxLib.h>
 
+#include <cstdlib>
+
+#include <ctime>   // time()
+
 // =============================
 // コンストラクタ
 // =============================
@@ -12,6 +16,10 @@ InGameScene::InGameScene()
     , enemy(nullptr)
     , enemy2(nullptr)
     , InGameBGM(-1)
+    , titan(nullptr)
+    , yamorihebi(nullptr)
+    , spawnTitan(false)
+    , spawnYamoriHebi(false)
 {
 }
 
@@ -44,6 +52,8 @@ InGameScene::~InGameScene()
 // =============================
 void InGameScene::Initialize()
 {
+    srand(GetNowCount());
+
     backgroundImage = LoadGraph("Resource/Illustrator/Background/Level1/Level1Haikei.png");
 
     backgroundImage2 = LoadGraph("Resource/Illustrator/Background/Level1/Level1Kave.png");
@@ -53,15 +63,29 @@ void InGameScene::Initialize()
     player = new Player();
     player->Initialize();   // 引数なしで呼ぶ
 
-    enemy = new Enemy(player);
-    enemy->Initialize();
 
-    enemy2 = new Enemy2(player);
-    enemy2->Initialize();
+    // それぞれ独立ランダム
+    //spawnTitan = (GetRand(1) == 1);  // 50%
+    //spawnYamoriHebi = (GetRand(1) == 1);  // 50%
+    spawnTitan = true;
+    spawnYamoriHebi = true;
+
+    if (spawnTitan)
+    {
+        titan = new Enemy(player);
+        titan->Initialize();
+    }
+
+    if (spawnYamoriHebi)
+    {
+        yamorihebi = new Enemy2(player);
+        yamorihebi->Initialize();
+    }
 
     // BGMがあるならここで読み込み
     // InGameBGM = LoadSoundMem("bgm.wav");
     // PlaySoundMem(InGameBGM, DX_PLAYTYPE_LOOP);
+
 }
 
 // =============================
@@ -72,26 +96,67 @@ eSceneType InGameScene::Update()
     float delta = 1.0f / 60.0f;
 
     player->Update(delta);
-    enemy->Update(delta);
-    enemy2->Update(delta);
+
+    if (titan)
+    {
+        titan->Update(delta);
+        if (titan->IsGameOver())  // ← Enemy のフラグをチェック
+            return eSceneType::eGameOver;
+    }
+
+    if (yamorihebi)
+        yamorihebi->Update(delta);
 
     // 上端到達処理
     // プレイヤーが上端に到達したら監視リセット
     if (player->DidReachTop())
     {
-        enemy->ResetWatchTime();
-        enemy2->ResetPosition();
+        // ===== Titan 40% =====
+        if (titan)
+        {
+            int rTitan = rand() % 100;   // 0～99
+
+            if (rTitan < 40)
+                titan->Spawn();
+            else
+                titan->Hide();
+        }
+
+
+        // ===== YamoriHebi 出現率上昇式 =====
+        if (yamorihebi)
+        {
+            int reach = player->GetReachTopCount();
+
+            int chance = 30 + reach * 5;   // 基本30%、1回ごと+5%
+
+            if (chance > 80)
+                chance = 80;
+
+            int r = rand() % 100;
+
+            if (r < chance)
+                yamorihebi->ResetPosition();
+            else
+                yamorihebi->Hide();
+        }
+
         player->ResetReachFlag();
     }
 
     // ===== 接触判定 =====
-    Vector2D diff = player->GetLocation() - enemy2->GetLocation();
-    float distance = sqrtf(diff.x * diff.x + diff.y * diff.y);
-
-    if (distance < 780.0f)   // ← 当たり判定半径
+    if (yamorihebi)
     {
-        return eSceneType::eGameOver;
+        Vector2D diff = player->GetLocation() - yamorihebi->GetLocation();
+        float distance = sqrtf(diff.x * diff.x + diff.y * diff.y);
+
+        if (distance < 780.0f)
+        {
+            return eSceneType::eGameOver;
+        }
     }
+
+
 
     // ESCでタイトルへ戻る例
     if (CheckHitKey(KEY_INPUT_ESCAPE))
@@ -165,8 +230,12 @@ void InGameScene::Draw()const
     }
 
     player->Draw();
-    enemy->Draw();
-    enemy2->Draw();
+
+    if (titan)
+        titan->Draw();
+
+    if (yamorihebi)
+        yamorihebi->Draw();
 }
 
 // =============================
@@ -197,5 +266,19 @@ void InGameScene::Finalize()
         StopSoundMem(InGameBGM);
         DeleteSoundMem(InGameBGM);
         InGameBGM = -1;
+    }
+
+    if (titan)
+    {
+        titan->Finalize();
+        delete titan;
+        titan = nullptr;
+    }
+
+    if (yamorihebi)
+    {
+        yamorihebi->Finalize();
+        delete yamorihebi;
+        yamorihebi = nullptr;
     }
 }

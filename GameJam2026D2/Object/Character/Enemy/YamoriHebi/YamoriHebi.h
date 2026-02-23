@@ -45,4 +45,7 @@ public:
 
     Vector2D GetLocation() const { return location; }
 
+    bool isActive;
+    void Hide();
+
 };
