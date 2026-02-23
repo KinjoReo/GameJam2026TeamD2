@@ -1,11 +1,12 @@
 #pragma once
 
-enum eSceneType
+enum class eSceneType
 {
 	eTitle,
 	eInGame,
 	eHelp,
 	eResult,
+	eGameOver,
 	eEnd,
 };
 

@@ -20,7 +20,14 @@ Enemy2::~Enemy2()
 void Enemy2::Initialize()
 {
     // 画面下から出現
-    location = Vector2D(300, 400);
+    location = Vector2D(1400, 1000);
+
+    YamoriHebiimage = LoadGraph("Resource/Illustrator/Character/Enemy/YamoriHebi/YamoriHebi.png");
+
+    if (YamoriHebiimage == -1)
+    {
+        printfDx("YamoriHebi画像の読み込み失敗\n");
+    }
 }
 
 void Enemy2::Update(float delta_second)
@@ -28,10 +35,7 @@ void Enemy2::Update(float delta_second)
     if (player == nullptr) return;
 
     // ===== スピード切り替え =====
-    if (player->IsHidden())
-        speed = 0.35f;   // しゃがみ中は速い
-    else
-        speed = 0.05f;   // 通常速度
+    float targetSpeed = player->IsHidden() ? 0.35f : 0.05f;     // しゃがみ中は速い、0.05fは通常速度
 
     // ===== 追跡処理 =====
     Vector2D dir = player->GetLocation() - location;
@@ -42,7 +46,18 @@ void Enemy2::Update(float delta_second)
     {
         dir.x /= length;
         dir.y /= length;
+
+        // 画像は「上向きが正面」なので角度補正
+        drawAngle = atan2f(dir.y, dir.x) + DX_PI_F / 1.75f;
     }
+
+    // 近距離なら加速
+    if (length < 940)
+    {
+        targetSpeed *= 10.0f;
+    }
+
+    speed += (targetSpeed - speed) * 0.1f;
 
     velocity = dir * speed;
     location += velocity;
@@ -50,35 +65,31 @@ void Enemy2::Update(float delta_second)
 
 void Enemy2::Draw() const
 {
-    int x = (int)location.x;
-    int y = (int)location.y;
+    if (YamoriHebiimage == -1) return;
 
-    int color = GetColor(0, 255, 0);  // 緑
-
-    // 向きで三角っぽく描画
-    if (facingRight)
-    {
-        DrawTriangle(x - 10, y - 10,
-            x - 10, y + 10,
-            x + 15, y,
-            color, TRUE);
-    }
-    else
-    {
-        DrawTriangle(x + 10, y - 10,
-            x + 10, y + 10,
-            x - 15, y,
-            color, TRUE);
-    }
+    // 画像の中心を基準に描く
+    DrawRotaGraph(
+        (int)location.x,
+        (int)location.y,
+        0.5,
+        drawAngle,
+        YamoriHebiimage,
+        TRUE
+    );
 }
 
 void Enemy2::Finalize()
 {
+    if (YamoriHebiimage != -1)
+    {
+        DeleteGraph(YamoriHebiimage);
+        YamoriHebiimage = -1;
+    }
 }
 
 void Enemy2::ResetPosition()
 {
-    location = Vector2D(300, 400);
+    location = Vector2D(1400, 1000);
     velocity = Vector2D(0, 0);
     watchTime = 0.0f;
 }

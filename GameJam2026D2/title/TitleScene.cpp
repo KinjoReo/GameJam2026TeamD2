@@ -6,6 +6,10 @@ int title_image = -1;
 float blink_time = 0.0f;
 int cursor_number = 0;
 bool blink_flag = true;
+int oldPad = 0;
+int oldEnter = 0;
+int oldUp = 0;
+int oldDown = 0;
 
 // =============================
 // 初期化
@@ -22,6 +26,12 @@ void TitleInit()
 	cursor_number = 0; // メニューカーソル初期位置
 	blink_flag = true; // 点滅表示の初期状態
 	blink_time = 0.0f; // 点滅用タイマー初期化
+
+	// 現在の入力状態を取得して保存（超重要）
+	oldPad = GetJoypadInputState(DX_INPUT_PAD1);
+	oldEnter = CheckHitKey(KEY_INPUT_RETURN);
+	oldUp = CheckHitKey(KEY_INPUT_UP);
+	oldDown = CheckHitKey(KEY_INPUT_DOWN);
 }
 
 
@@ -30,10 +40,15 @@ void TitleInit()
 // =============================
 eSceneType TitleUpdate(float delta_second)
 {
-	static int oldPad = 0;
-	int nowPad = GetJoypadInputState(DX_INPUT_PAD1);
 
+	int nowPad = GetJoypadInputState(DX_INPUT_PAD1);
+	int nowEnter = CheckHitKey(KEY_INPUT_RETURN);
+	int nowUp = CheckHitKey(KEY_INPUT_UP);
+	int nowDown = CheckHitKey(KEY_INPUT_DOWN);
+
+	// =============================
 	// 点滅処理
+	// =============================
 	blink_time += delta_second;
 	if (blink_time >= 1.5f)
 	{
@@ -42,51 +57,48 @@ eSceneType TitleUpdate(float delta_second)
 	}
 
 	// =============================
-	// カーソル下移動
+	// カーソル下移動（押した瞬間）
 	// =============================
-	if (
-		CheckHitKey(KEY_INPUT_DOWN) ||  // キーボード
-		((nowPad & PAD_INPUT_DOWN) && !(oldPad & PAD_INPUT_DOWN)) // コントローラー
-		)
+	if ((nowDown && !oldDown) ||  // キーボード
+		((nowPad & PAD_INPUT_DOWN) && !(oldPad & PAD_INPUT_DOWN))) // コントローラー
 	{
 		cursor_number++;
 
 		// メニュー数制限（例：2個なら0～1）
-		if (cursor_number > 1)
-			cursor_number = 1;
+		if (cursor_number > 1) cursor_number = 1;
 	}
 
 	// =============================
-	// カーソル上移動
+	// カーソル上移動（押した瞬間）
 	// =============================
-	if (
-		CheckHitKey(KEY_INPUT_UP) ||
-		((nowPad & PAD_INPUT_UP) && !(oldPad & PAD_INPUT_UP))
-		)
+	if ((nowUp && !oldUp) ||
+		((nowPad & PAD_INPUT_UP) && !(oldPad & PAD_INPUT_UP)))
 	{
 		cursor_number--;
 
-		if (cursor_number < 0)
-			cursor_number = 0;
+		if (cursor_number < 0) cursor_number = 0;
 	}
 
 	// =============================
-	// 決定
+	// 決定（押した瞬間）
 	// =============================
-	if (CheckHitKey(KEY_INPUT_RETURN) ||
+	if ((nowEnter && !oldEnter) ||
 		((nowPad & PAD_INPUT_1) && !(oldPad & PAD_INPUT_1)))
 	{
 		if (cursor_number == 0)
-			return eInGame;
+			return eSceneType::eInGame;
 
 		if (cursor_number == 1)
-			return eEnd;   // 例：終了
+			return eSceneType::eEnd;   // 例：終了
 	}
 
-
+	// 状態保存
 	oldPad = nowPad;
+	oldEnter = nowEnter;
+	oldUp = nowUp;
+	oldDown = nowDown;
 
-	return eTitle;
+	return eSceneType::eTitle;
 
 }
 

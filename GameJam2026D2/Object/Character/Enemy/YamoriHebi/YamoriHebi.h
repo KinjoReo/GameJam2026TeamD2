@@ -19,6 +19,11 @@ private:
 
     float watchTime;        // 監視時間（必要なら使用）
 
+    int YamoriHebiimage;
+
+    float drawAngle;
+
+
 public:
 
     Enemy2();
@@ -37,5 +42,7 @@ public:
     void ResetWatchTime() { watchTime = 0.0f; }
 
     void ResetPosition();
+
+    Vector2D GetLocation() const { return location; }
 
 };

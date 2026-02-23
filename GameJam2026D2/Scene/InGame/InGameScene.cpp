@@ -84,6 +84,15 @@ eSceneType InGameScene::Update()
         player->ResetReachFlag();
     }
 
+    // ===== ÚG”»’è =====
+    Vector2D diff = player->GetLocation() - enemy2->GetLocation();
+    float distance = sqrtf(diff.x * diff.x + diff.y * diff.y);
+
+    if (distance < 780.0f)   // © “–‚½‚è”»’è”¼Œa
+    {
+        return eSceneType::eGameOver;
+    }
+
     // ESC‚Åƒ^ƒCƒgƒ‹‚Ö–ß‚é—á
     if (CheckHitKey(KEY_INPUT_ESCAPE))
     {

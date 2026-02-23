@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="Object\Character\Enemy\YamoriHebi\YamoriHebi.cpp" />
+    <ClCompile Include="Result\ResultScene.cpp" />
     <ClCompile Include="Scene\InGame\InGameScene.cpp" />
     <ClCompile Include="Utility\Input\InputManager.cpp" />
     <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object\Character\Enemy\YamoriHebi\YamoriHebi.h" />
+    <ClInclude Include="Result\ResultScene.h" />
     <ClInclude Include="Scenes\SceneBase\SceneBase.h" />
     <ClInclude Include="Scene\InGame\InGameScene.h" />
     <ClInclude Include="title\SceneType.h" />

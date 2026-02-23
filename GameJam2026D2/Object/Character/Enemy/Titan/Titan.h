@@ -24,6 +24,10 @@ private:
 	bool isWatching;         // プレイヤーを今見つけているか
 	bool isGameOver;         // ゲームオーバー状態
 
+	int Titanimage;   // Titan画像ハンドル
+
+	float drawAngle;
+
 public:
 
 	/// <summary>
@@ -55,6 +59,9 @@ public:
 	/// 本体の描画および赤画面エフェクトを表示する
 	/// </summary>
 	virtual void Draw() const override;
+
+
+	virtual void Finalize() override;
 
 	/// <summary>
 	/// 監視中に画面を赤くする演出

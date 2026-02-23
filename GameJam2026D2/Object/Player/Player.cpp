@@ -36,7 +36,7 @@ void Player::Initialize()
 {
 
 	// 初期位置（現在画面下側中央）
-	location = Vector2D(300, 500);
+	location = Vector2D(370, 740);
 
 	// 上端到達回数リセット
 	reachTopCount = 0;
@@ -92,17 +92,17 @@ void Player::Update(float delta_second)
 	// =============================
 
 	// 右壁に到達
-	if (location.x >= 290)
+	if (location.x >= 370)
 	{
-		location.x = 290;
+		location.x = 370;
 		lockDir = LOCK_RIGHT;   // 次は左方向しか許可しない
 		isOnWall = true;
 	}
 
 	// 左壁に到達
-	if (location.x <= 180)
+	if (location.x <= 190)
 	{
-		location.x = 180;
+		location.x = 190;
 		lockDir = LOCK_LEFT;  // 次は右方向しか許可しない
 		isOnWall = true;
 	}
@@ -205,9 +205,9 @@ void Player::Update(float delta_second)
 		location.y = 100.0f;
 		OnReachTop();
 	}
-	else if (location.y > 300.0f)
+	else if (location.y > 700.0f)
 	{
-		location.y = 300.0f;
+		location.y = 700.0f;
 	}
 }
 
@@ -304,9 +304,9 @@ void Player::AnimationControl(float delta_second)
 void Player::DrawDarkScreen(float alpha)
 {
 	// alpha = 0.0f ~ 1.0f
-	int color = GetColor(50, 50, 80);
+	int color = GetColor(80, 80, 140);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)(alpha * 255));
-	DrawBox(0, 0, 800, 600, color, TRUE);            // 画面全体を塗る
+	DrawBox(0, 0, 1280, 720, color, TRUE);            // 画面全体を塗る
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -341,7 +341,7 @@ void Player::OnReachTop()
 	}
 
 	// プレイヤーの位置リセット
-	location = Vector2D(300, 500);
+	location = Vector2D(380, 740);
 
 	// 画面明転フェードイン
 	for (float alpha = 1.0f; alpha >= 0.0f; alpha -= 0.05f)
