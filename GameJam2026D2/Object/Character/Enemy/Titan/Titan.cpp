@@ -8,12 +8,13 @@
 /// 監視対象のプレイヤーを受け取り、各種変数を初期化する
 /// </summary>
 /// <param name="target">監視するプレイヤー</param>
-Enemy::Enemy(Player* target)
+Enemy::Enemy(Player* target)                                                 // TitanはEnemy
 	: player(target),         // 監視対象(プレイヤー)を保存
 	watchTime(0.0f),          // 監視経過時間を0に初期化
-	watchLimit(8.0f),         // 秒数指定してその秒間見られたらゲームオーバー
+	watchLimit(22.0f),         // 秒数指定してその秒間見られたらゲームオーバー
 	isWatching(false),        // 初期状態では監視していない
-	isGameOver(false)         // ゲームオーバーではない(false)
+	isGameOver(false),         // ゲームオーバーではない(false)
+	isActive(false)
 {
 }
 
@@ -33,7 +34,19 @@ Enemy::~Enemy()
 /// </summary>
 void Enemy::Initialize()
 {
-	location = Vector2D(300, 200);  // 上の方に出現
+	location = Vector2D(400, 1000);  // 上の方に出現
+
+	Titanimage = LoadGraph("Resource/Illustrator/Character/Enemy/Titan/Titan.png");
+
+	if (Titanimage == -1)
+	{
+		printfDx("画像読み込み失敗\n");
+	}
+
+	// 登場SE読み込み
+	TitanSE = LoadSoundMem("Resource/Sound/SE/タイタン.mp3"); // 適切なSEファイルを指定
+	if (TitanSE == -1)
+		printfDx("Enemy登場SEの読み込み失敗\n");
 }
 
 
@@ -44,6 +57,7 @@ void Enemy::Initialize()
 /// <param name="delta_second">1フレームあたりの経過時間</param>
 void Enemy::Update(float delta_second)
 {
+	if (!isActive) return;   // 出現していなければ何もしない
 	if (isGameOver) return;               // すでにゲームオーバーなら何もしない
 
 	// プレイヤーが隠れていないなら監視
@@ -74,15 +88,22 @@ void Enemy::Update(float delta_second)
 /// </summary>
 void Enemy::Draw() const
 {
-
-	int x = (int)location.x;
-	int y = (int)location.y;
-
+	if (!isActive) return;
 
 	// ===============================
 	// エネミー本体描画
 	// ===============================
-	DrawBox(x - 15, y - 15, x + 15, y + 15,GetColor(255, 255, 0), TRUE);    // 黄色の四角
+	if (Titanimage == -1) return;
+
+	// 画像の中心を基準に描く
+	DrawRotaGraph(
+		(int)location.x,
+		(int)location.y,
+		0.6,
+		drawAngle,
+		Titanimage,
+		TRUE
+	);
 
 
 	// ===============================
@@ -128,7 +149,7 @@ void Enemy::DrawRedScreen(float alpha) const
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)(alpha * 180));   // 180 にしているのは真っ赤になりすぎないように。
 
 	// 画面全体を塗りつぶす（現在800x600固定）
-	DrawBox(0, 0, 800, 600, color, TRUE);
+	DrawBox(0, 0, 1280, 720, color, TRUE);
 
 	// ブレンドモードを元に戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -143,4 +164,37 @@ void Enemy::ResetWatchTime()
 {
 	watchTime = 0.0f;
 	isWatching = false;
+}
+
+void Enemy::Finalize()
+{
+	if (Titanimage != -1)
+	{
+		DeleteGraph(Titanimage);
+		Titanimage = -1;
+	}
+
+	if (TitanSE != -1)
+	{
+		DeleteSoundMem(TitanSE);
+		TitanSE = -1;
+	}
+}
+
+void Enemy::Spawn()
+{
+	location = Vector2D(400, 1000);
+	watchTime = 0.0f;
+	isWatching = false;
+	isGameOver = false;
+	isActive = true;    // 出現ON
+
+	// 登場時にSE再生
+	if (TitanSE != -1)
+		PlaySoundMem(TitanSE, DX_PLAYTYPE_BACK);
+}
+
+void Enemy::Hide()
+{
+	isActive = false;
 }

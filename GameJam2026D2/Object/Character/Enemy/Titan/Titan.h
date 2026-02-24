@@ -10,7 +10,7 @@ class Player;       // Playerクラスの前方宣言（ヘッダ依存を減らすため）
 /// プレイヤーを監視するエネミークラス
 /// 一定時間見続けるとゲームオーバーにする
 /// </summary>
-class Enemy : public GameObject
+class Enemy : public GameObject                                   // TitanはEnemy
 {
 private:
 
@@ -23,6 +23,12 @@ private:
 	// 状態フラグ
 	bool isWatching;         // プレイヤーを今見つけているか
 	bool isGameOver;         // ゲームオーバー状態
+
+	int Titanimage;   // Titan画像ハンドル
+
+	float drawAngle;
+
+	int TitanSE; // 登場時のSE
 
 public:
 
@@ -56,6 +62,9 @@ public:
 	/// </summary>
 	virtual void Draw() const override;
 
+
+	virtual void Finalize() override;
+
 	/// <summary>
 	/// 監視中に画面を赤くする演出
 	/// </summary>
@@ -72,4 +81,10 @@ public:
 	/// </summary>
 	/// <returns>true = ゲームオーバー</returns>
 	bool IsGameOver() const { return isGameOver; }
+
+
+	bool isActive;      // 出現しているか
+
+	void Spawn();
+	void Hide();
 };

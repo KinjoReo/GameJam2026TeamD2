@@ -91,7 +91,9 @@ private:
 	float downCooldown = 0.0f;   // しゃがみ後のクールタイム
 	bool wasOnWall = false;      // 前フレームで壁に接触していたか
 	bool isDownPressed;          // 現在しゃがんでいるか
-
+	float wallCooldown = 0.0f;
+	float crouchActiveTime = 0.0f;   // しゃがみ中の硬直時間
+	float crouchCooldown = 0.0f;     // 再しゃがみ待ち時間
 
 	// ========================================
 	// ゲーム進行関連
@@ -100,11 +102,6 @@ private:
 	int reachTopCount;           // 上端到達回数、プレイヤーが上端に到達したカウント
 	int back_ground_sound;		 // 音源、後ろで流れるBGMやSE
 
-
-	/// <summary>
-	/// 上端到達回数取得（内部用）
-	/// </summary>
-	int GetReachTopCount() const { return reachTopCount; }      // もし外から参照したいなら
 
 
 	/// <summary>
@@ -119,6 +116,9 @@ private:
 	/// 外部（Sceneなど）への通知用
 	/// </summary>
 	bool reachedTopThisFrame = false;
+
+	int crouchSE;           // しゃがみSE
+	bool isCrouchSEPlaying; // 再生中かどうか
 
 
 public:
@@ -172,6 +172,10 @@ public:
 	void ResetReachFlag() { reachedTopThisFrame = false; }
 
 
+	/// <summary>
+	/// 上端到達回数取得（内部用）
+	/// </summary>
+	int GetReachTopCount() const { return reachTopCount; }      // もし外から参照したいなら
 
 	/// <summary>
 	/// 当たり判定通知処理

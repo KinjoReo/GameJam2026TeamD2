@@ -36,7 +36,7 @@ void Player::Initialize()
 {
 
 	// 初期位置（現在画面下側中央）
-	location = Vector2D(300, 500);
+	location = Vector2D(370, 740);
 
 	// 上端到達回数リセット
 	reachTopCount = 0;
@@ -48,6 +48,13 @@ void Player::Initialize()
 	isDownPressed = false;
 
 	/*image = move_animation[0];*/
+
+	// しゃがみSE読み込み
+	crouchSE = LoadSoundMem("Resource/Sound/SE/しゃがみ2.mp3");  // しゃがみSE
+	if (crouchSE == -1)
+		printfDx("しゃがみSEの読み込み失敗\n");
+
+	isCrouchSEPlaying = false;
 
 }
 
@@ -64,15 +71,24 @@ void Player::Update(float delta_second)
 
 
 	// =============================
-	// クールタイム減少処理
+	// タイマー減算
 	// =============================
-
-	// クールタイム減少
-	if (downCooldown > 0.0f)
+	if (wallCooldown > 0.0f)
 	{
-		downCooldown -= delta_second;
-		if (downCooldown < 0.0f)
-			downCooldown = 0.0f;
+		wallCooldown -= delta_second;
+		if (wallCooldown < 0.0f) wallCooldown = 0.0f;
+	}
+
+	if (crouchActiveTime > 0.0f)
+	{
+		crouchActiveTime -= delta_second;
+		if (crouchActiveTime < 0.0f) crouchActiveTime = 0.0f;
+	}
+
+	if (crouchCooldown > 0.0f)
+	{
+		crouchCooldown -= delta_second;
+		if (crouchCooldown < 0.0f) crouchCooldown = 0.0f;
 	}
 
 	bool isOnWall = false;   // 壁
@@ -83,17 +99,17 @@ void Player::Update(float delta_second)
 	// =============================
 
 	// 右壁に到達
-	if (location.x >= 290)
+	if (location.x >= 370)
 	{
-		location.x = 290;
+		location.x = 370;
 		lockDir = LOCK_RIGHT;   // 次は左方向しか許可しない
 		isOnWall = true;
 	}
 
 	// 左壁に到達
-	if (location.x <= 180)
+	if (location.x <= 190)
 	{
-		location.x = 180;
+		location.x = 190;
 		lockDir = LOCK_LEFT;  // 次は右方向しか許可しない
 		isOnWall = true;
 	}
@@ -101,7 +117,8 @@ void Player::Update(float delta_second)
 	// 壁に初めて接触したときのみクールタイム発動
 	if (isOnWall && !wasOnWall)
 	{
-		downCooldown = 2.0f;  // 壁クールタイム
+		wallCooldown = 2.0f;  // 壁クールタイム
+		crouchCooldown = 2.0f;   // しゃがみ再使用2秒
 	}
 
 	wasOnWall = isOnWall;
@@ -119,58 +136,31 @@ void Player::Update(float delta_second)
 	// ----- 移動判定（キーボード or パッド） -----
 	bool moveRight = CheckHitKey(KEY_INPUT_RIGHT) || (pad & PAD_INPUT_RIGHT);
 	bool moveLeft = CheckHitKey(KEY_INPUT_LEFT) || (pad & PAD_INPUT_LEFT);
-	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_DOWN);
-
-
-	// しゃがみ状態更新（Enemyが参照）
-	isDownPressed = moveDown;   // しゃがみ
-
-
-
-	//if (isDownPressed)
-	//{
-	//	velocity = Vector2D(0.0f, 0.0f);
-	//}
-
-	//// 右キー
-	//if (!isDownPressed && moveRight && lockDir != LOCK_RIGHT)
-	//{
-	//	if (lockDir != LOCK_RIGHT)  // 右がロックされていない
-	//	{
-	//		velocity.x = 1.0f;
-	//		velocity.y = -0.6f;
-	//	}
-	//}
-
-	//// 左キー
-	//if (!isDownPressed && moveLeft && lockDir != LOCK_LEFT)
-	//{
-	//	if (lockDir != LOCK_LEFT)   // 左がロックされていない
-	//	{
-	//		velocity.x = -1.0f;
-	//		velocity.y = -0.6f;
-	//	}
-	//}
-
+	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_B);
 
 
 	// =============================
-	// しゃがみクールタイム開始
-	// =============================
+    // しゃがみ開始判定
+    // クールタイム中はしゃがめない
+    // =============================
+	if (moveDown && crouchCooldown <= 0.0f && crouchActiveTime <= 0.0f)
+    {
+        crouchActiveTime = 5.0f;   // 5秒間しゃがみ硬直
+        crouchCooldown   = 1.0f;   // 再使用1秒
+		// しゃがみ状態更新（Enemyが参照）
+		isDownPressed = moveDown;   // しゃがみ
+    }
 
-	// しゃがみ押した瞬間にクールタイム開始
-	if (moveDown && downCooldown <= 0.0f)
-	{
-		downCooldown = 3.0f;      // 3秒クールタイム
-	}
+    // しゃがみ状態更新
+    isDownPressed = (crouchActiveTime > 0.0f);
 
 
 	// =============================
 	// 移動処理
 	// =============================
 
-	// クールタイム中は動かない
-	if (downCooldown > 0.0f)
+	// 壁硬直 or しゃがみ硬直中は動けない
+	if (wallCooldown > 0.0f || crouchActiveTime > 0.0f)
 	{
 		velocity = Vector2D(0.0f, 0.0f);
 	}
@@ -222,9 +212,29 @@ void Player::Update(float delta_second)
 		location.y = 100.0f;
 		OnReachTop();
 	}
-	else if (location.y > 300.0f)
+	else if (location.y > 700.0f)
 	{
-		location.y = 300.0f;
+		location.y = 700.0f;
+	}
+
+	// しゃがみSE再生制御
+	if (isDownPressed)
+	{
+		// 再生していなければ鳴らす
+		if (!isCrouchSEPlaying && crouchSE != -1)
+		{
+			PlaySoundMem(crouchSE, DX_PLAYTYPE_LOOP); // ループ再生
+			isCrouchSEPlaying = true;
+		}
+	}
+	else
+	{
+		// しゃがみ解除なら停止
+		if (isCrouchSEPlaying)
+		{
+			StopSoundMem(crouchSE);
+			isCrouchSEPlaying = false;
+		}
 	}
 }
 
@@ -270,6 +280,12 @@ void Player::Finalize()
 	// 動的配列の解放
 	move_animation.clear();
 	dying_animation.clear();
+
+	if (crouchSE != -1)
+	{
+		DeleteSoundMem(crouchSE);
+		crouchSE = -1;
+	}
 }
 
 
@@ -321,9 +337,9 @@ void Player::AnimationControl(float delta_second)
 void Player::DrawDarkScreen(float alpha)
 {
 	// alpha = 0.0f ~ 1.0f
-	int color = GetColor(50, 50, 80);
+	int color = GetColor(80, 80, 140);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)(alpha * 255));
-	DrawBox(0, 0, 800, 600, color, TRUE);            // 画面全体を塗る
+	DrawBox(0, 0, 1280, 720, color, TRUE);            // 画面全体を塗る
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -358,7 +374,7 @@ void Player::OnReachTop()
 	}
 
 	// プレイヤーの位置リセット
-	location = Vector2D(300, 500);
+	location = Vector2D(380, 740);
 
 	// 画面明転フェードイン
 	for (float alpha = 1.0f; alpha >= 0.0f; alpha -= 0.05f)

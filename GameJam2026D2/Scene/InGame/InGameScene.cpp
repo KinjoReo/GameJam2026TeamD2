@@ -3,70 +3,283 @@
 
 #include <DxLib.h>
 
+#include <cstdlib>
+
+#include <ctime>   // time()
+
+// =============================
+// コンストラクタ
+// =============================
 InGameScene::InGameScene()
-    :wallHeight(25)
+    : wallHeight(25)
     , wallTop(80)
-    , InGameBGM(-1)
     , player(nullptr)
-    , warpImage(-1)
-    , warpScale(1.0f)
-    
+    , enemy(nullptr)
+    , enemy2(nullptr)
+    , InGameBGM(-1)
+    , titan(nullptr)
+    , yamorihebi(nullptr)
+    , spawnTitan(false)
+    , spawnYamoriHebi(false)
 {
 }
 
+// =============================
+// デストラクタ
+// =============================
 InGameScene::~InGameScene()
 {
-}
-
-void InGameScene::Initialize()
-{
-	AssetsContainer* container = AssetsContainer::GetInstance();
-
-	player = new Player;
-	player->Initialize(0);
-
-    InGameBGM = container->GetSound("");
-    ChangeVolumeSoundMem(135, InGameBGM);
-
-    if (InGameBGM != -1)
+    if (player)
     {
-        PlaySoundMem(InGameBGM, DX_PLAYTYPE_LOOP);
+        delete player;
+        player = nullptr;
     }
 
-    gWinnerPlayer = -1;
+    if (enemy)
+    {
+        delete enemy;
+        enemy = nullptr;
+    }
+
+    if (enemy2)
+    {
+        delete enemy2;
+        enemy2 = nullptr;
+    }
 }
 
-//更新
+// =============================
+// 初期化
+// =============================
+void InGameScene::Initialize()
+{
+    srand(GetNowCount());
+
+    backgroundImage = LoadGraph("Resource/Illustrator/Background/Level1/Level1Haikei.png");
+
+    backgroundImage2 = LoadGraph("Resource/Illustrator/Background/Level1/Level1Kave.png");
+
+    backgroundImage3 = LoadGraph("Resource/Illustrator/Background/Level1/Level1Kaidan.png");
+
+    player = new Player();
+    player->Initialize();   // 引数なしで呼ぶ
+
+
+    // それぞれ独立ランダム
+    //spawnTitan = (GetRand(1) == 1);  // 50%
+    //spawnYamoriHebi = (GetRand(1) == 1);  // 50%
+    spawnTitan = true;
+    spawnYamoriHebi = true;
+
+    if (spawnTitan)
+    {
+        titan = new Enemy(player);
+        titan->Initialize();
+    }
+
+    if (spawnYamoriHebi)
+    {
+        yamorihebi = new Enemy2(player);
+        yamorihebi->Initialize();
+    }
+
+    // BGMがあるならここで読み込み
+    // InGameBGM = LoadSoundMem("bgm.wav");
+    // PlaySoundMem(InGameBGM, DX_PLAYTYPE_LOOP);
+
+}
+
+// =============================
+// 更新
+// =============================
 eSceneType InGameScene::Update()
 {
-    InputManager* input = InputManager::GetInstance();
+    float delta = 1.0f / 60.0f;
 
-    Vector2D prev = player->GetLocatioc();
+    player->Update(delta);
 
-    player->Update();
+    if (titan)
+    {
+        titan->Update(delta);
+        if (titan->IsGameOver())  // ← Enemy のフラグをチェック
+            return eSceneType::eGameOver;
+    }
 
-    CheckWarp(player, nextWarpTimePlayer);
+    if (yamorihebi)
+        yamorihebi->Update(delta);
+
+    // 上端到達処理
+    // プレイヤーが上端に到達したら監視リセット
+    if (player->DidReachTop())
+    {
+        // ===== Titan 40% =====
+        if (titan)
+        {
+            int rTitan = rand() % 100;   // 0～99
+
+            if (rTitan < 40)
+                titan->Spawn();
+            else
+                titan->Hide();
+        }
 
 
+        // ===== YamoriHebi 出現率上昇式 =====
+        if (yamorihebi)
+        {
+            int reach = player->GetReachTopCount();
+
+            int chance = 30 + reach * 5;   // 基本30%、1回ごと+5%
+
+            if (chance > 80)
+                chance = 80;
+
+            int r = rand() % 100;
+
+            if (r < chance)
+                yamorihebi->ResetPosition();
+            else
+                yamorihebi->Hide();
+        }
+
+        player->ResetReachFlag();
+    }
+
+    // ===== 接触判定 =====
+    if (yamorihebi)
+    {
+        Vector2D diff = player->GetLocation() - yamorihebi->GetLocation();
+        float distance = sqrtf(diff.x * diff.x + diff.y * diff.y);
+
+        if (distance < 780.0f)
+        {
+            return eSceneType::eGameOver;
+        }
+    }
+
+
+
+    // ESCでタイトルへ戻る例
+    if (CheckHitKey(KEY_INPUT_ESCAPE))
+    {
+        return eSceneType::eTitle;
+    }
+
+    return eSceneType::eInGame;
 }
 
-//描画
+// =============================
+// 描画
+// =============================
 void InGameScene::Draw()const
 {
-    const int screenW = 1280;
-    const int screenH = 720;
+    if (backgroundImage != -1)
+    {
+        int w, h;
+        GetGraphSize(backgroundImage, &w, &h);
 
-    //外壁 
+        float scaleX = 1390.0f / w;
+        float scaleY = 884.0f / h;
 
-    //プレイヤー
-    player->Draw;
+        float scale = min(scaleX, scaleY);
+
+        DrawRotaGraph(
+            815, 440,   // 画面中央
+            scale,
+            0.0,
+            backgroundImage,
+            TRUE
+        );
+    }
+
+    if (backgroundImage2 != -1)
+    {
+        int w, h;
+        GetGraphSize(backgroundImage2, &w, &h);
+
+        float scaleX = 1230.0f / w;
+        float scaleY = 724.0f / h;
+
+        float scale = min(scaleX, scaleY);
+
+        DrawRotaGraph(
+            418, 360,   // 画面中央
+            scale,
+            0.0,
+            backgroundImage2,
+            TRUE
+        );
+    }
+
+    if (backgroundImage3 != -1)
+    {
+        int w, h;
+        GetGraphSize(backgroundImage3, &w, &h);
+
+        float scaleX = 1230.0f / w;
+        float scaleY = 724.0f / h;
+
+        float scale = min(scaleX, scaleY);
+
+        DrawRotaGraph(
+            340, 360,   // 画面中央
+            scale,
+            0.0,
+            backgroundImage3,
+            TRUE
+        );
+    }
+
+    player->Draw();
+
+    if (titan)
+        titan->Draw();
+
+    if (yamorihebi)
+        yamorihebi->Draw();
 }
 
+// =============================
+// 終了処理
+// =============================
 void InGameScene::Finalize()
 {
+    if (backgroundImage != -1)
+    {
+        DeleteGraph(backgroundImage);
+        backgroundImage = -1;
+    }
+
+    if (backgroundImage2 != -1)
+    {
+        DeleteGraph(backgroundImage2);
+        backgroundImage2 = -1;
+    }
+
+    if (backgroundImage3 != -1)
+    {
+        DeleteGraph(backgroundImage3);
+        backgroundImage3 = -1;
+    }
+
     if (InGameBGM != -1)
     {
         StopSoundMem(InGameBGM);
         DeleteSoundMem(InGameBGM);
+        InGameBGM = -1;
+    }
+
+    if (titan)
+    {
+        titan->Finalize();
+        delete titan;
+        titan = nullptr;
+    }
+
+    if (yamorihebi)
+    {
+        yamorihebi->Finalize();
+        delete yamorihebi;
+        yamorihebi = nullptr;
     }
 }
