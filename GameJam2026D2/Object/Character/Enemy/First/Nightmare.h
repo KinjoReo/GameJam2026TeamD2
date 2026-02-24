@@ -1,6 +1,9 @@
 #pragma once
 
 #include "../EnemyBase.h"
+#include "../../../Player/Player.h"
+
+class Player;
 
 class Nightmare : public EnemyBase
 {
@@ -68,10 +71,16 @@ private:
 	/// <param name = "hit_object">1フレーム当たりの時間</param>
 	virtual void AnimationControl(float delta_second);
 
+	bool anim_initialize = false;
+
+	Player* player = nullptr;
+
 	/// <summary>
 	/// エフェクト制御処理
 	/// </summary>
 	/// <param name = "hit_object">1フレーム当たりの時間</param>
 	//virtual void EffectControl(float delta_second);
 
+public:
+	void SetPlayer(Player* p) { player = p; }
 };
