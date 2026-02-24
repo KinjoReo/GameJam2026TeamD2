@@ -117,6 +117,9 @@ private:
 	/// </summary>
 	bool reachedTopThisFrame = false;
 
+	int crouchSE;           // ‚µ‚á‚ª‚İSE
+	bool isCrouchSEPlaying; // Ä¶’†‚©‚Ç‚¤‚©
+
 
 public:
 

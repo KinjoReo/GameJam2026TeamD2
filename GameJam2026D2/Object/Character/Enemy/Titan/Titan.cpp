@@ -42,6 +42,11 @@ void Enemy::Initialize()
 	{
 		printfDx("画像読み込み失敗\n");
 	}
+
+	// 登場SE読み込み
+	TitanSE = LoadSoundMem("Resource/Sound/SE/タイタン.mp3"); // 適切なSEファイルを指定
+	if (TitanSE == -1)
+		printfDx("Enemy登場SEの読み込み失敗\n");
 }
 
 
@@ -168,6 +173,12 @@ void Enemy::Finalize()
 		DeleteGraph(Titanimage);
 		Titanimage = -1;
 	}
+
+	if (TitanSE != -1)
+	{
+		DeleteSoundMem(TitanSE);
+		TitanSE = -1;
+	}
 }
 
 void Enemy::Spawn()
@@ -176,7 +187,11 @@ void Enemy::Spawn()
 	watchTime = 0.0f;
 	isWatching = false;
 	isGameOver = false;
-	isActive = true;
+	isActive = true;    // 出現ON
+
+	// 登場時にSE再生
+	if (TitanSE != -1)
+		PlaySoundMem(TitanSE, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::Hide()

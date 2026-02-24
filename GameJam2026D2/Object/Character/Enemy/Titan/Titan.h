@@ -28,6 +28,8 @@ private:
 
 	float drawAngle;
 
+	int TitanSE; // “oê‚ÌSE
+
 public:
 
 	/// <summary>

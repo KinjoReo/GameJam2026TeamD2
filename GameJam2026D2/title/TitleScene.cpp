@@ -10,6 +10,7 @@ int oldPad = 0;
 int oldEnter = 0;
 int oldUp = 0;
 int oldDown = 0;
+int titleBGM = -1;       // タイトルBGMのサウンドID
 
 // =============================
 // 初期化
@@ -32,6 +33,22 @@ void TitleInit()
 	oldEnter = CheckHitKey(KEY_INPUT_RETURN);
 	oldUp = CheckHitKey(KEY_INPUT_UP);
 	oldDown = CheckHitKey(KEY_INPUT_DOWN);
+
+	// =============================
+	// タイトルBGM読み込み＆再生
+	// =============================
+	titleBGM = LoadSoundMem("Resource/Sound/BGM/タイトル.mp3");  // 適切なBGMファイルに変更
+	if (titleBGM == -1)
+		printfDx("タイトルBGM読み込み失敗\n");
+	else
+		PlaySoundMem(titleBGM, DX_PLAYTYPE_LOOP);  // ループ再生
+
+	if (titleBGM != -1)
+	{
+		StopSoundMem(titleBGM);   // 再生停止
+		DeleteSoundMem(titleBGM); // メモリ解放
+		titleBGM = -1;
+	}
 }
 
 

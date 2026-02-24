@@ -49,6 +49,13 @@ void Player::Initialize()
 
 	/*image = move_animation[0];*/
 
+	// しゃがみSE読み込み
+	crouchSE = LoadSoundMem("Resource/Sound/SE/しゃがみ2.mp3");  // しゃがみSE
+	if (crouchSE == -1)
+		printfDx("しゃがみSEの読み込み失敗\n");
+
+	isCrouchSEPlaying = false;
+
 }
 
 /// <summary>
@@ -209,6 +216,26 @@ void Player::Update(float delta_second)
 	{
 		location.y = 700.0f;
 	}
+
+	// しゃがみSE再生制御
+	if (isDownPressed)
+	{
+		// 再生していなければ鳴らす
+		if (!isCrouchSEPlaying && crouchSE != -1)
+		{
+			PlaySoundMem(crouchSE, DX_PLAYTYPE_LOOP); // ループ再生
+			isCrouchSEPlaying = true;
+		}
+	}
+	else
+	{
+		// しゃがみ解除なら停止
+		if (isCrouchSEPlaying)
+		{
+			StopSoundMem(crouchSE);
+			isCrouchSEPlaying = false;
+		}
+	}
 }
 
 
@@ -253,6 +280,12 @@ void Player::Finalize()
 	// 動的配列の解放
 	move_animation.clear();
 	dying_animation.clear();
+
+	if (crouchSE != -1)
+	{
+		DeleteSoundMem(crouchSE);
+		crouchSE = -1;
+	}
 }
 
 

@@ -23,6 +23,8 @@ private:
 
     float drawAngle;
 
+    int YamoriHebiSE; // “oê‚ÌSE
+
 
 public:
 

@@ -30,6 +30,11 @@ void Enemy2::Initialize()
     {
         printfDx("YamoriHebi‰æ‘œ‚Ì“Ç‚İ‚İ¸”s\n");
     }
+
+    // “oêSE“Ç‚İ‚İ
+    YamoriHebiSE = LoadSoundMem("Resource/Sound/SE/ƒ„ƒ‚ƒŠƒwƒr.mp3"); // “KØ‚ÈSEƒtƒ@ƒCƒ‹‚ğw’è
+    if (YamoriHebiSE == -1)
+        printfDx("Enemy2“oêSE‚Ì“Ç‚İ‚İ¸”s\n");
 }
 
 void Enemy2::Update(float delta_second)
@@ -91,6 +96,12 @@ void Enemy2::Finalize()
         DeleteGraph(YamoriHebiimage);
         YamoriHebiimage = -1;
     }
+
+    if (YamoriHebiSE != -1)
+    {
+        DeleteSoundMem(YamoriHebiSE);
+        YamoriHebiSE = -1;
+    }
 }
 
 void Enemy2::ResetPosition()
@@ -99,6 +110,10 @@ void Enemy2::ResetPosition()
     velocity = Vector2D(0, 0);
     watchTime = 0.0f;
     isActive = true;   // oŒ»ON
+
+    // “oê‚ÉSEÄ¶
+    if (YamoriHebiSE != -1)
+        PlaySoundMem(YamoriHebiSE, DX_PLAYTYPE_BACK);
 }
 
 void Enemy2::Hide()
