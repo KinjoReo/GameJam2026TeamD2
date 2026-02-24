@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="Utility\Input\InputManager.cpp" />
     <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Object\Character\Enemy\EnemyCharacter.cpp" />
@@ -144,9 +145,11 @@
     <ClCompile Include="Utility\ResourceManager.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
     <ClCompile Include="title\TitleScene.cpp" />
-	<ClCompile Include="Scene\InGame\InGameScene.cpp" />
+    <ClCompile Include="Scene\InGame\InGameScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Input\InputState.h" />
     <ClInclude Include="Utility\Input\InputManager.h" />
     <ClInclude Include="Object\Character\Enemy\EnemyBase.h" />
     <ClInclude Include="Object\Character\Enemy\EnemyCharacter.h" />

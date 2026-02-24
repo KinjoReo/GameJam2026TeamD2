@@ -1,4 +1,5 @@
 #include "InGameScene.h"
+#include "../../Input/InputManager.h"
 
 #include <DxLib.h>
 

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Object/Player/Player.h"
+#include "../SceneBase/SceneBase.h"
+#include "../../Object/Player/Player.h"
 
 class InGameScene : public SceneBase
 {
