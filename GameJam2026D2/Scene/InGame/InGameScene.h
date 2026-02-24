@@ -41,6 +41,6 @@ public:
 
     eSceneType GetNowSceneType() const override
     {
-        return eSceneType::eInGame;   // enum class‘Î‰ž
+        return eSceneType::eInGame;   // enum class???
     }
 };

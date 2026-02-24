@@ -56,6 +56,24 @@ void Player::Initialize()
 
 	isCrouchSEPlaying = false;
 
+	// 数字画像読み込み（1枚画像から切り出し）
+	int fullImg = LoadGraph("Resource/Illustrator/Background/Suuji/Suuji.png");
+	if (fullImg == -1)
+		printfDx("数字画像の読み込み失敗\n");
+
+	// 数字の幅・高さ
+	int w, h;
+	GetGraphSize(fullImg, &w, &h);
+	numberWidth = w / 10;  // 0～9 10個
+	numberHeight = h;
+
+	for (int i = 0; i < 10; i++)
+	{
+		numberImages[i] = DerivationGraph(fullImg, i * numberWidth, 0, numberWidth, numberHeight);
+	}
+
+	DeleteGraph(fullImg);  // 元画像は不要
+
 }
 
 /// <summary>
@@ -246,9 +264,6 @@ void Player::Update(float delta_second)
 void Player::Draw() const
 {
 
-	// 上端到達回数表示
-	DrawFormatString(50, 50, GetColor(255, 255, 255),"% d", reachTopCount);
-
 
 	// しゃがみ中は青、それ以外は赤
 	int color;
@@ -267,6 +282,43 @@ void Player::Draw() const
 
 	DrawBox(x - 10, y - 10, x + 10, y + 10, color, TRUE);
 
+	// 上端到達回数を数字画像で描画
+	// 数字描画
+	int count = reachTopCount;
+	int digits[5];
+	int digitCount = 0;
+
+	if (count == 0) { digits[0] = 0; digitCount = 1; }
+	else {
+		while (count > 0) { digits[digitCount++] = count % 10; count /= 10; }
+	}
+
+	int startX = 50;
+	int startY = 50;
+	int scale = 5;    // 拡大倍率
+	int spacing = 4;  // 桁間スペース
+
+	// 上端到達回数表示
+	//DrawFormatString(50, 50, GetColor(255, 255, 255), "% d", reachTopCount);
+
+	// 数字描画（最後に描画）
+	 // 右から左に描画するので逆順
+	for (int i = 0; i < digitCount; i++)
+	{
+		int digit = digits[digitCount - 1 - i];
+		int img = numberImages[digit];
+		if (img != -1)
+		{
+			int w = numberWidth * scale;
+			int h = numberHeight * scale;
+			DrawExtendGraph(
+				startX + i * (w + spacing), startY,
+				startX + i * (w + spacing) + w, startY + h,
+				img,
+				TRUE  // 透過あり
+			);
+		}
+	}
 
 }
 
