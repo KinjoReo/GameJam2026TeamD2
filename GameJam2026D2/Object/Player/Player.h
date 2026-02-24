@@ -120,6 +120,10 @@ private:
 	int crouchSE;           // ‚µ‚á‚ª‚İSE
 	bool isCrouchSEPlaying; // Ä¶’†‚©‚Ç‚¤‚©
 
+	int numberImages[10];    // 0`9‚Ì”š‰æ‘œ
+	int numberWidth;         // ‰æ‘œ•
+	int numberHeight;        // ‰æ‘œ‚‚³
+
 
 public:
 
