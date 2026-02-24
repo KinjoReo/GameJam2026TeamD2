@@ -4,6 +4,7 @@
 #include "../../Scenes/SceneBase/SceneBase.h"
 #include "../../Object/Character/Enemy/Titan/Titan.h"
 #include "../../Object/Character/Enemy/YamoriHebi/YamoriHebi.h"
+#include "../../Object/Character/Enemy/First/Nightmare.h"  
 
 class InGameScene : public SceneBase
 {
@@ -23,6 +24,9 @@ private:
 
     // BGM
     int InGameBGM = -1;
+
+    /*Nightmare* nightmare = nullptr;
+    bool spawnNightmare = true;*/
 
 public:
     InGameScene();

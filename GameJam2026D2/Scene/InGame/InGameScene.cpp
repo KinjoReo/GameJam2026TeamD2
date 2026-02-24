@@ -64,6 +64,18 @@ void InGameScene::Initialize()
     player = new Player();
     player->Initialize();   // 引数なしで呼ぶ
 
+    //if (spawnNightmare)
+    //{
+    //    nightmare = new Nightmare();
+    //    nightmare->Initialize();
+
+    //    // 画面内の適当な位置に出す（あなたの座標系に合わせて調整）
+    //    nightmare->SetLocation(Vector2D(1100.0f, 600.0f));
+
+    //    // 追尾したいのでプレイヤーを渡す（Nightmareに SetPlayer を実装してる場合）
+    //    /*nightmare->SetPlayer(player);*/
+    //}
+
 
     // それぞれ独立ランダム
     //spawnTitan = (GetRand(1) == 1);  // 50%
@@ -97,6 +109,9 @@ eSceneType InGameScene::Update()
     float delta = 1.0f / 60.0f;
 
     player->Update(delta);
+
+    /*if (nightmare)
+        nightmare->Update(delta);*/
 
     if (titan)
     {
@@ -173,6 +188,9 @@ eSceneType InGameScene::Update()
 // =============================
 void InGameScene::Draw()const
 {
+    /*if (nightmare)
+        nightmare->Draw();*/
+
     if (backgroundImage != -1)
     {
         int w, h;
@@ -244,6 +262,13 @@ void InGameScene::Draw()const
 // =============================
 void InGameScene::Finalize()
 {
+    /*if (nightmare)
+    {
+        nightmare->Finalize();
+        delete nightmare;
+        nightmare = nullptr;
+    }*/
+
     if (backgroundImage != -1)
     {
         DeleteGraph(backgroundImage);

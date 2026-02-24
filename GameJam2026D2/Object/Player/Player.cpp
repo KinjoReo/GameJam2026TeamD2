@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "DxLib.h"
 #include "../Character/Enemy/Titan/Titan.h"
+#include "../../Utility/ResourceManager.h"
 
 #include <cmath>
 
@@ -36,7 +37,7 @@ void Player::Initialize()
 {
 
 	// 初期位置（現在画面下側中央）
-	location = Vector2D(370, 740);
+	location = Vector2D(370, 720);
 
 	// 上端到達回数リセット
 	reachTopCount = 0;
@@ -48,6 +49,17 @@ void Player::Initialize()
 	isDownPressed = false;
 
 	/*image = move_animation[0];*/
+
+	// プレイヤー画像読み込み
+	playerImage = LoadGraph("Resource/Illustrator/Character/Player/Nobori/PlayerAruki.png");
+	GetGraphSize(playerImage, &playerW, &playerH);
+	if (playerImage == -1)
+	{
+		printfDx("プレイヤー画像の読み込み失敗\n");
+	}
+	// しゃがみ画像
+	crouchImage = LoadGraph("Resource/Illustrator/Character/Player/Syagami/PlayerSyagami.png");
+	GetGraphSize(crouchImage, &crouchW, &crouchH);
 
 	// しゃがみSE読み込み
 	crouchSE = LoadSoundMem("Resource/Sound/SE/しゃがみ2.mp3");  // しゃがみSE
@@ -74,6 +86,16 @@ void Player::Initialize()
 
 	DeleteGraph(fullImg);  // 元画像は不要
 
+	///////////////////////////////////////////////////
+	// リソースマネージャーインスタンス取得
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	//(ファイルパス,総分割画像数,横分割数,縦分割数,横画像サイズ,縦画像サイズ);
+	numbers = rm->GetImages("Resource/Illustrator/Background/Suuji/Suuji2.png", 10, 5, 2, 350, 300);
+	/*numbers[0];*/
+
+	///////////////////////////////////////////////////
+
 }
 
 /// <summary>
@@ -84,6 +106,9 @@ void Player::Initialize()
 void Player::Update(float delta_second)
 {
 	
+	if (isFading) return; // フェード中は更新しない
+
+
 	float speed = 0.5f;
 	velocity = Vector2D(0.0f, 0.0f);
 
@@ -156,6 +181,15 @@ void Player::Update(float delta_second)
 	bool moveLeft = CheckHitKey(KEY_INPUT_LEFT) || (pad & PAD_INPUT_LEFT);
 	bool moveDown = CheckHitKey(KEY_INPUT_DOWN) || (pad & PAD_INPUT_B);
 
+	if (moveRight)
+	{
+		isFacingRight = true;
+	}
+
+	if (moveLeft)
+	{
+		isFacingRight = false;
+	}
 
 	// =============================
     // しゃがみ開始判定
@@ -280,7 +314,51 @@ void Player::Draw() const
 	int x = (int)location.x;
 	int y = (int)location.y;
 
-	DrawBox(x - 10, y - 10, x + 10, y + 10, color, TRUE);
+	int baseSize = 40;   // 横幅基準
+
+	int img;
+	int w, h;
+
+	if (isDownPressed)
+	{
+		img = crouchImage;
+		w = crouchW;
+		h = crouchH;
+	}
+	else
+	{
+		img = playerImage;
+		w = playerW;
+		h = playerH;
+	}
+
+	// 縦横比を維持
+	float scale = (float)baseSize / w;
+	int drawW = baseSize;
+	int drawH = (int)(h * scale);
+
+	if (isFacingRight)
+	{
+		DrawExtendGraph(
+			x + drawW / 2,
+			y - drawH / 2,
+			x - drawW / 2,
+			y + drawH / 2,
+			img,
+			TRUE
+		);
+	}
+	else
+	{
+		DrawExtendGraph(
+			x - drawW / 2,
+			y - drawH / 2,
+			x + drawW / 2,
+			y + drawH / 2,
+			img,
+			TRUE
+		);
+	}
 
 	// 上端到達回数を数字画像で描画
 	// 数字描画
@@ -288,37 +366,47 @@ void Player::Draw() const
 	int digits[5];
 	int digitCount = 0;
 
+	// 0の場合
 	if (count == 0) { digits[0] = 0; digitCount = 1; }
 	else {
 		while (count > 0) { digits[digitCount++] = count % 10; count /= 10; }
 	}
 
-	int startX = 50;
-	int startY = 50;
-	int scale = 5;    // 拡大倍率
-	int spacing = 4;  // 桁間スペース
+	int startX = 25;
+	int startY = 25;
+	float scaleX = 0.3f; // 横拡大率（350px → 105pxくらい）
+	float scaleY = 0.3f; // 縦拡大率（300px → 90pxくらい）
+	int spacing = 4;
+
+	// 右から左に描画
+	for (int i = 0; i < digitCount; i++)
+	{
+		int digit = digits[digitCount - 1 - i];
+
+		// numbers配列の0～9番に数字画像が対応している場合
+		// もし数字が10～11番にある場合は調整
+		int img = numbers[digit];
+
+		if (img != -1)
+		{
+			int w = 350 * scaleX;
+			int h = 300 * scaleY;
+
+			DrawExtendGraph(
+				startX + i * (w + spacing), startY,
+				startX + i * (w + spacing) + w, startY + h,
+				img,
+				TRUE
+			);
+		}
+	}
 
 	// 上端到達回数表示
 	//DrawFormatString(50, 50, GetColor(255, 255, 255), "% d", reachTopCount);
 
 	// 数字描画（最後に描画）
 	 // 右から左に描画するので逆順
-	for (int i = 0; i < digitCount; i++)
-	{
-		int digit = digits[digitCount - 1 - i];
-		int img = numberImages[digit];
-		if (img != -1)
-		{
-			int w = numberWidth * scale;
-			int h = numberHeight * scale;
-			DrawExtendGraph(
-				startX + i * (w + spacing), startY,
-				startX + i * (w + spacing) + w, startY + h,
-				img,
-				TRUE  // 透過あり
-			);
-		}
-	}
+	
 
 }
 
@@ -332,6 +420,12 @@ void Player::Finalize()
 	// 動的配列の解放
 	move_animation.clear();
 	dying_animation.clear();
+
+	if (playerImage != -1)
+	{
+		DeleteGraph(playerImage);
+		playerImage = -1;
+	}
 
 	if (crouchSE != -1)
 	{
@@ -410,6 +504,9 @@ void Player::OnReachTop()
 
 	reachedTopThisFrame = true;
 
+	// フェード開始
+	isFading = true;
+
 	// エネミーが存在するなら監視リセット
 	if (enemy != nullptr)
 	{
@@ -426,7 +523,8 @@ void Player::OnReachTop()
 	}
 
 	// プレイヤーの位置リセット
-	location = Vector2D(380, 740);
+	location = Vector2D(380, 720);
+
 
 	// 画面明転フェードイン
 	for (float alpha = 1.0f; alpha >= 0.0f; alpha -= 0.05f)
@@ -436,4 +534,11 @@ void Player::OnReachTop()
 		ScreenFlip();
 		WaitTimer(16);
 	}
+
+	isFading = false; // フェード終了
+}
+
+bool Player::IsFading() const
+{
+	return isFading;
 }

@@ -10,7 +10,11 @@ int oldPad = 0;
 int oldEnter = 0;
 int oldUp = 0;
 int oldDown = 0;
-int titleBGM = -1;       // タイトルBGMのサウンドID
+
+// グローバル変数定義
+int cursorSE = -1;
+int decisionSE = -1;
+int titleBGM = -1;         // タイトルBGMのサウンドID
 
 // =============================
 // 初期化
@@ -43,12 +47,12 @@ void TitleInit()
 	else
 		PlaySoundMem(titleBGM, DX_PLAYTYPE_LOOP);  // ループ再生
 
-	if (titleBGM != -1)
-	{
-		StopSoundMem(titleBGM);   // 再生停止
-		DeleteSoundMem(titleBGM); // メモリ解放
-		titleBGM = -1;
-	}
+	// SE読み込み
+	cursorSE = LoadSoundMem("Resource/Sound/SE/選択.mp3");
+	if (cursorSE == -1) printfDx("カーソルSE読み込み失敗\n");
+
+	decisionSE = LoadSoundMem("Resource/Sound/SE/決定.mp3");
+	if (decisionSE == -1) printfDx("決定SE読み込み失敗\n");
 }
 
 
@@ -83,6 +87,9 @@ eSceneType TitleUpdate(float delta_second)
 
 		// メニュー数制限（例：2個なら0～1）
 		if (cursor_number > 1) cursor_number = 1;
+
+		// SE再生
+		if (cursorSE != -1) PlaySoundMem(cursorSE, DX_PLAYTYPE_BACK);
 	}
 
 	// =============================
@@ -94,19 +101,33 @@ eSceneType TitleUpdate(float delta_second)
 		cursor_number--;
 
 		if (cursor_number < 0) cursor_number = 0;
+
+		// SE再生
+		if (cursorSE != -1) PlaySoundMem(cursorSE, DX_PLAYTYPE_BACK);
 	}
 
 	// =============================
 	// 決定（押した瞬間）
 	// =============================
-	if ((nowEnter && !oldEnter) ||
-		((nowPad & PAD_INPUT_1) && !(oldPad & PAD_INPUT_1)))
+	static bool decisionTriggered = false; // 一度決定音を鳴らしたか
+
+	if (!decisionTriggered && ((nowEnter && !oldEnter) ||
+		((nowPad & PAD_INPUT_1) && !(oldPad & PAD_INPUT_1))))
+	{
+		// まず鳴らす
+		if (decisionSE != -1)
+			PlaySoundMem(decisionSE, DX_PLAYTYPE_NORMAL);
+
+		decisionTriggered = true; // SE再生済み
+	}
+
+	// SEが鳴った後、次フレームでシーン切り替え
+	if (decisionTriggered)
 	{
 		if (cursor_number == 0)
 			return eSceneType::eInGame;
-
 		if (cursor_number == 1)
-			return eSceneType::eEnd;   // 例：終了
+			return eSceneType::eEnd;
 	}
 
 	// 状態保存
@@ -147,5 +168,27 @@ void TitleDraw(void)
 	{
 		int cy = cursor_number * 46; // 行ごとのオフセット
 			DrawTriangle(820, 530 + cy, 840, 545 + cy, 820, 560 + cy, GetColor(255, 50, 50), TRUE);
+	}
+}
+
+void TitleScene::Finalize()
+{
+	if (titleBGM != -1)
+	{
+		StopSoundMem(titleBGM);
+		DeleteSoundMem(titleBGM);
+		titleBGM = -1;
+	}
+
+	if (cursorSE != -1)
+	{
+		DeleteSoundMem(cursorSE);
+		cursorSE = -1;
+	}
+
+	if (decisionSE != -1)
+	{
+		DeleteSoundMem(decisionSE);
+		decisionSE = -1;
 	}
 }

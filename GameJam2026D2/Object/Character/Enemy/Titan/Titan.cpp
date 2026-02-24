@@ -59,6 +59,7 @@ void Enemy::Update(float delta_second)
 {
 	if (!isActive) return;   // 出現していなければ何もしない
 	if (isGameOver) return;               // すでにゲームオーバーなら何もしない
+	if (player->IsFading()) return; // フェード中は監視しない
 
 	// プレイヤーが隠れていないなら監視
 	if (!player->IsHidden())

@@ -66,6 +66,10 @@ private:
 	std::vector<int> move_animation;		// 移動のアニメーション画像
 	std::vector<int> dying_animation;		// 死亡のアニメーション画像
 
+	///////////////////////////////////////////////////
+	std::vector<int> numbers;	//数字画像
+	///////////////////////////////////////////////////
+
 	float animation_time;					// アニメーション経過時間
 	int animation_count;					// アニメーション番号
 
@@ -101,6 +105,14 @@ private:
 
 	int reachTopCount;           // 上端到達回数、プレイヤーが上端に到達したカウント
 	int back_ground_sound;		 // 音源、後ろで流れるBGMやSE
+
+	int playerImage;
+	int crouchImage;
+
+	int playerW, playerH;
+	int crouchW, crouchH;
+
+	bool isFacingRight;
 
 
 
@@ -146,6 +158,7 @@ public:
 	// 終了処理
 	virtual void Finalize() override;
 
+	bool IsFading() const;
 
 	// ========================================
 	// 外部参照用 Getter
@@ -187,6 +200,11 @@ public:
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	//virtual void OnHitCollision(GameObjectBase* hit_object) override;
 
+
+	bool isFading = false;  // フェード中は true
+
+
+	int GetNumberImage(int idx) const { return numberImages[idx]; }
 
 private:
 
