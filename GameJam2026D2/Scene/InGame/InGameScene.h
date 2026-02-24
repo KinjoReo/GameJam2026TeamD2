@@ -1,32 +1,46 @@
 #pragma once
 
-#include "../SceneBase/SceneBase.h"
 #include "../../Object/Player/Player.h"
+#include "../../Scenes/SceneBase/SceneBase.h"
+#include "../../Object/Character/Enemy/Titan/Titan.h"
+#include "../../Object/Character/Enemy/YamoriHebi/YamoriHebi.h"
 
 class InGameScene : public SceneBase
 {
 private:
-	int wallHeight;
-	int wallTop;
-	Player* player;
+    int wallHeight;
+    int wallTop;
 
-	//BGM
-	int InGameBGM = -1;
+    Player* player = nullptr;
+    Enemy* enemy = nullptr;
+    Enemy2* enemy2 = nullptr;
+
+    int backgroundImage = -1;
+
+    int backgroundImage2 = -1;
+
+    int backgroundImage3 = -1;
+
+    // BGM
+    int InGameBGM = -1;
 
 public:
-	InGameScene();
-	virtual ~InGameScene();
+    InGameScene();
+    virtual ~InGameScene();
 
-private:
-	virtual void Initialize() override;
-	virtual eSceneType Update() override;
-	virtual void Draw() const override;
-	virtual void Finalize() override;
+    void Initialize() override;
+    eSceneType Update() override;
+    void Draw() const override;
+    void Finalize() override;
 
-public:
-	virtual eSceneType GetNowSceneType() const override
-	{
-		return eSceneType::eInGame;
-	}
+    Enemy* titan;
+    Enemy2* yamorihebi;
 
+    bool spawnTitan;
+    bool spawnYamoriHebi;
+
+    eSceneType GetNowSceneType() const override
+    {
+        return eSceneType::eInGame;   // enum class???
+    }
 };

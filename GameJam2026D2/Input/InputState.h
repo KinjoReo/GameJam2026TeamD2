@@ -1,9 +1,9 @@
-#pragma once
-
-enum class eInputState
-{
-	eNone,
-	ePressed,
-	eReleased,
-	eHold,
-};
+//#pragma once
+//
+//enum class eInputState
+//{
+//	eNone,
+//	ePressed,
+//	eReleased,
+//	eHold,
+//};
