@@ -1,6 +1,9 @@
 #pragma once
 
 #include "../EnemyBase.h"
+#include "../../../Player/Player.h"
+
+class Player;
 
 class Nightmare : public EnemyBase
 {
@@ -68,10 +71,21 @@ private:
 	/// <param name = "hit_object">1フレーム当たりの時間</param>
 	virtual void AnimationControl(float delta_second);
 
+	bool anim_initialize = false;
+
 	/// <summary>
 	/// エフェクト制御処理
 	/// </summary>
 	/// <param name = "hit_object">1フレーム当たりの時間</param>
 	//virtual void EffectControl(float delta_second);
 
+private:
+	Vector2D velocity;			//現在の移動速度（滑らか追尾用）
+	float maxSpeed = 20.0f;		//最高速度
+	float acce1 = 80.0f;		//加速度（追従力）
+
+	Player* player = nullptr;	//追尾対象
+
+public:
+	void SetPlayer(Player* p) { player = p; }
 };
