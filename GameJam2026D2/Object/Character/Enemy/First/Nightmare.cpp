@@ -69,6 +69,8 @@ void Nightmare::Initialize()
 	else {
 		image = animation[0];
 	}
+
+	velocity = Vector2D(0.0f, 0.0f);
 }
 
 void Nightmare::Update(float delta_second)
@@ -127,6 +129,11 @@ void Nightmare::NoHit()
 
 }
 
+static float Len(const Vector2D& v)
+{
+	return std::sqrt(v.x * v.x + v.y * v.y);
+}
+
 // 移動処理
 void Nightmare::Movement(float delta_second)
 {
@@ -135,21 +142,48 @@ void Nightmare::Movement(float delta_second)
 
 	if (!player) return;
 
+	//敵→プレイヤーの差分
 	Vector2D dir = player->GetLocation() - location;
-
-	float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-	if (len < 0.001f) return;
+	float dist = Len(dir);
+	if (dist < 0.001f) return;
 
 	const float stopDist = 40.0f;
-	if (len <= stopDist)  return;
+	if (dist <= stopDist) {
+		velocity = Vector2D(0, 0); return;
+	}
 
-	dir.x /= len;
-	dir.y /= len;
+	dir.x /= dist;
+	dir.y /= dist;
 
-	location += dir * (speed * delta_second);
+	//加速
+	velocity += dir * (acce1 * delta_second);
 
-	//左右反転
-	flip_flag = (dir.x < 0.0f);
+	//速度制限
+	float v = Len(velocity);
+	if (v > maxSpeed)
+	{
+		velocity.x = velocity.x / v * maxSpeed;
+		velocity.y = velocity.y / v * maxSpeed;
+	}
+
+	location += velocity;	//velocityを「１フレーム分」にしてるのでdelta_secondをかけない設計
+	flip_flag = (velocity.x < 0.0f);
+
+	//カクっと追尾（直進版）----------------------------------------------------------------------------
+	////距離
+	//float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+	//if (len < 0.001f) return;
+	////近づきすぎたら止める（ガタつき防止）
+	//const float stopDist = 40.0f;
+	//if (len <= stopDist)  return;
+	////方向を正規化（長さを1にする）
+	//dir.x /= len;
+	//dir.y /= len;
+	////移動：speedは「1秒当たり」想定
+	//location += dir * (speed * delta_second);
+	////画像反転（プレイヤーが左にいるなら反転）
+	//flip_flag = (dir.x < 0.0f);
+	//--------------------------------------------------------------------------------------------------
 }
 
 //攻撃処理
